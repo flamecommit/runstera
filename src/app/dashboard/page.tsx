@@ -10,19 +10,17 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user && !saved) {
-      console.log('useEffect');
       const { name, email, image } = session.user;
 
       const handleUserRegist = async () => {
-        console.log('handleUserRegist');
         try {
-          const { code } = await request({
+          const { code, data } = await request({
             method: 'POST',
             url: '/api/user',
             body: { name, email, image },
           });
 
-          console.log(code);
+          console.log(code, data);
 
           if (code === 200) {
             console.log('success');
@@ -37,8 +35,6 @@ export default function DashboardPage() {
       handleUserRegist();
     }
   }, [session, status, saved]);
-
-  console.log('session :', session);
 
   return (
     <div>
