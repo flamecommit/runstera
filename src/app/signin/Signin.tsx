@@ -28,12 +28,10 @@ const StyledSigninUI = styled.div`
   row-gap: 12px;
   justify-content: center;
   align-items: center;
-  margin: -30px -20px -150px;
   height: 100vh;
   button {
     display: flex;
     align-items: center;
-    background-color: var(--secondary-background);
     padding: 12px 24px;
     column-gap: 12px;
     border-radius: 4px;
