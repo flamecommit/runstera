@@ -64,7 +64,6 @@ const fetchData = async <T>({
     console.log(`Success : ${options.method} ${url}`);
 
     return json;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.errorType === 'network') {
       console.log(`Network Error ${error.code} : ${options.method} ${url}`);
