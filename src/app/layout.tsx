@@ -1,5 +1,6 @@
 import StyledComponentsRegistry from '@/components/config/registry';
 import AuthSession from '@/components/config/Session';
+import BaseTemplate from '@/components/template/BaseTemplate';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body>
         <AuthSession>
-          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+          <StyledComponentsRegistry>
+            <BaseTemplate>{children}</BaseTemplate>
+          </StyledComponentsRegistry>
         </AuthSession>
       </body>
     </html>
