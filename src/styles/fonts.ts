@@ -19,3 +19,13 @@ export const Pretendard = localFont({
     },
   ],
 });
+
+export const Roboto = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Roboto_SemiCondensed-BoldItalic.woff2',
+      weight: '700',
+      style: 'italic',
+    },
+  ],
+});

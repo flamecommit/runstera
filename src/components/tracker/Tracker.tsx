@@ -1,5 +1,6 @@
 import TrackerButton from '@/components/tracker/Button';
 import { useTrackerStore } from '@/stores/tracker';
+import { Roboto } from '@/styles/fonts';
 import {
   formatDuration,
   getDistanceFromLatLonInMeters,
@@ -106,7 +107,6 @@ export default function Tracker() {
       ...latlng,
     );
 
-    // 🔥 이 조건이 핵심!
     if (moved < MIN_MOVE_DISTANCE) return;
 
     lastPositionRef.current = latlng;
@@ -153,6 +153,7 @@ export default function Tracker() {
     setTrackingStatus('paused');
   };
 
+  // 트래킹 재시작
   const resumeTracking = async () => {
     watchIdRef.current = navigator.geolocation.watchPosition(
       handleWatchPosition,
@@ -306,11 +307,8 @@ export default function Tracker() {
         {/* 달리는 중 */}
         {trackingStatus === 'running' && (
           <>
-            <TrackerButton
-              color={isLock ? 'black' : 'gray'}
-              onClick={() => setIsLock(!isLock)}
-            >
-              {isLock ? '잠금중' : '잠금해제'}
+            <TrackerButton color="black" onClick={() => setIsLock(!isLock)}>
+              {isLock ? '잠금' : '잠금해제'}
             </TrackerButton>
             <TrackerButton
               color="black"
@@ -333,54 +331,6 @@ export default function Tracker() {
           </>
         )}
       </div>
-
-      {/* {trackingStatus === 'idle' ? (
-        <>
-          <div className="status">{gpsStatus}</div>
-        </>
-      ) : (
-        <>
-          <div className="dashboard">
-            <div className="elapsed">
-              {Math.floor(duration / 60)}분 {duration % 60}초
-            </div>
-          </div>
-
-          <div className="distance">{(distance / 1000).toFixed(2)}km</div>
-          <div className="distance-test">{distance.toFixed(0)}m</div>
-        </>
-      )}
-
-      {trackingStatus === 'idle' && (
-        <div className="start-area">
-          <button
-            onClick={startTracking}
-            type="button"
-            disabled={gpsStatus !== 'acquired'}
-          >
-            {gpsStatus !== 'acquired' ? 'Loading...' : '시작'}
-          </button>
-        </div>
-      )}
-
-      {trackingStatus === 'running' && (
-        <div className="start-area">
-          <button onClick={pauseTracking} type="button">
-            일시정지
-          </button>
-        </div>
-      )}
-
-      {trackingStatus === 'paused' && (
-        <div className="start-area">
-          <button onClick={resumeTracking} type="button">
-            계속
-          </button>
-          <button onClick={stopTracking} type="button">
-            종료
-          </button>
-        </div>
-      )} */}
     </StyledTracker>
   );
 }
@@ -400,13 +350,16 @@ const StyledTracker = styled.div`
     gap: 24px;
   }
   .dashboard {
+    font-family: ${Roboto};
     font-weight: 700;
+    font-style: italic;
     .pace {
       position: absolute;
       top: 30px;
       left: 30px;
       z-index: 1000;
       font-size: 30px;
+      letter-spacing: -0.02em;
     }
     .duration {
       position: absolute;
@@ -414,15 +367,17 @@ const StyledTracker = styled.div`
       right: 30px;
       z-index: 1000;
       font-size: 30px;
+      letter-spacing: -0.02em;
     }
     .distance {
       position: absolute;
-      bottom: 40%;
+      bottom: 28%;
       right: 0;
       left: 0;
       z-index: 1000;
       text-align: center;
       font-size: 72px;
+      letter-spacing: -0.04em;
     }
   }
 `;
