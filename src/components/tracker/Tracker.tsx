@@ -386,8 +386,9 @@ export default function Tracker() {
 }
 
 const StyledTracker = styled.div`
-  position: relative;
-  height: 100vh;
+  position: absolute;
+  inset: 0;
+  height: 100%;
   .tracker-button-area {
     position: absolute;
     bottom: 12%;
