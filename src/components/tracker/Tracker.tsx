@@ -264,7 +264,7 @@ export default function Tracker() {
         {initialPosition && <MapCenterSetter center={initialPosition} />}
 
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
-        {initialPosition && status === 'idle' && (
+        {initialPosition && trackingStatus === 'idle' && (
           <Marker
             position={initialPosition}
             icon={divIcon({
@@ -274,7 +274,7 @@ export default function Tracker() {
             })}
           />
         )}
-        {allPositions.length > 0 && status !== 'idle' && (
+        {allPositions.length > 0 && trackingStatus !== 'idle' && (
           <LocationMarker position={currentPosition} />
         )}
         {segments.map((segment, i) =>
@@ -282,13 +282,15 @@ export default function Tracker() {
         )}
       </MapContainer>
 
-      <div className="dashboard">
-        <div className="pace">{getPace(distance, duration)}</div>
-        {/* 달린 시간 */}
-        <div className="duration">{formatDuration(duration)}</div>
-        {/* 달린 거리 */}
-        <div className="distance">{(distance / 1000).toFixed(2)}km</div>
-      </div>
+      {trackingStatus !== 'idle' && (
+        <div className="dashboard">
+          <div className="pace">{getPace(distance, duration)}</div>
+          {/* 달린 시간 */}
+          <div className="duration">{formatDuration(duration)}</div>
+          {/* 달린 거리 */}
+          <div className="distance">{(distance / 1000).toFixed(2)}km</div>
+        </div>
+      )}
 
       <div className="tracker-button-area">
         {/* 시작 전 */}
@@ -402,12 +404,14 @@ const StyledTracker = styled.div`
       position: absolute;
       top: 30px;
       left: 30px;
+      z-index: 1000;
       font-size: 30px;
     }
     .duration {
       position: absolute;
       top: 30px;
       right: 30px;
+      z-index: 1000;
       font-size: 30px;
     }
     .distance {
@@ -415,6 +419,7 @@ const StyledTracker = styled.div`
       bottom: 40%;
       right: 0;
       left: 0;
+      z-index: 1000;
       text-align: center;
       font-size: 72px;
     }
