@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { Pretendard } from './fonts';
-import { reset } from './mixin';
+import { reset } from './variable';
 
 const GlobalStyle = createGlobalStyle`
   *,

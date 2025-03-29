@@ -1,11 +1,14 @@
 'use client';
 
+import { useTrackerStore } from '@/stores/tracker';
 import Link from 'next/link';
 import styled from 'styled-components';
 
 export default function BottomNavigation() {
+  const { trackingStatus } = useTrackerStore();
+
   return (
-    <StyledBottomNavigation>
+    <StyledBottomNavigation data-tracking-status={trackingStatus}>
       <div className="center">
         <Link href="/dashboard">Dashboard</Link>
         <Link href="/tracker">Tracker</Link>
@@ -21,7 +24,9 @@ const StyledBottomNavigation = styled.nav`
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 10;
+  z-index: 1000;
+  transform: translateY(100px);
+  transition: transform 500ms;
   .center {
     max-width: 768px;
     margin: 0 auto;
@@ -36,5 +41,8 @@ const StyledBottomNavigation = styled.nav`
       width: 100%;
       background-color: #f7f7f7;
     }
+  }
+  &[data-tracking-status='idle'] {
+    transform: translateY(0px);
   }
 `;

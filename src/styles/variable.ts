@@ -74,3 +74,7 @@ export const footerHeight = {
   pc: 60,
   mobile: 48,
 };
+
+export const color = {
+  primary: '#FE973A',
+};
