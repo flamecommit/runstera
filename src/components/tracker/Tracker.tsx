@@ -1,16 +1,16 @@
 import TrackerButton from '@/components/tracker/Button';
 import { useTrackerStore } from '@/stores/tracker';
 import { Roboto } from '@/styles/fonts';
+import { TLatLng } from '@/types/tracker';
 import {
   formatDuration,
   getDistanceFromLatLonInMeters,
   getPace,
   getTotalDistance,
 } from '@/utils/distance';
-import request from '@/utils/request';
 import { divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   MapContainer,
   Marker,
@@ -20,10 +20,9 @@ import {
 } from 'react-leaflet';
 import styled from 'styled-components';
 
-type LatLng = [number, number];
 type GpsStatus = 'idle' | 'requesting' | 'acquired' | 'error';
 
-const MapCenterSetter = ({ center }: { center: LatLng }) => {
+const MapCenterSetter = ({ center }: { center: TLatLng }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -33,7 +32,7 @@ const MapCenterSetter = ({ center }: { center: LatLng }) => {
   return null;
 };
 
-const LocationMarker = ({ position }: { position: LatLng }) => {
+const LocationMarker = ({ position }: { position: TLatLng }) => {
   const map = useMap();
   useEffect(() => {
     map.setView(position, 16); // 사용자의 위치 중심으로 이동
@@ -55,25 +54,30 @@ const MIN_MOVE_DISTANCE = 5;
 const MAX_ACCURACY = 30;
 
 export default function Tracker() {
-  const { trackingStatus, setTrackingStatus } = useTrackerStore();
+  const {
+    trackingStatus,
+    setTrackingStatus,
+    setStartedAt,
+    setEndedAt,
+    duration,
+    setDuration,
+    segments,
+    setSegments,
+  } = useTrackerStore();
   const [isLock, setIsLock] = useState<boolean>(false);
   const [gpsStatus, setGpsStatus] = useState<GpsStatus>('idle');
-  const [segments, setSegments] = useState<LatLng[][]>([]);
   const allPositions = segments.flat();
   const distance = segments.reduce(
     (sum, segment) => sum + getTotalDistance(segment),
     0,
   );
   const watchIdRef = useRef<number | null>(null);
-  const [startedAt, setStartedAt] = useState<Date | null>(null);
-  const [endedAt, setEndedAt] = useState<Date | null>(null);
-  const [duration, setDuration] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const lastPositionRef = useRef<LatLng | null>(null);
+  const lastPositionRef = useRef<TLatLng | null>(null);
   const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
-  const [initialPosition, setInitialPosition] = useState<LatLng | null>(null);
+  const [initialPosition, setInitialPosition] = useState<TLatLng | null>(null);
   const preWatchIdRef = useRef<number | null>(null);
-  const centerPosition: LatLng = [37.5665, 126.978];
+  const centerPosition: TLatLng = [37.5665, 126.978];
 
   const handleWatchPosition = (pos: GeolocationPosition) => {
     // 최초 1회만 실행, 타이머 실행
@@ -93,7 +97,7 @@ export default function Tracker() {
 
     if (accuracy > MAX_ACCURACY) return;
 
-    const latlng: LatLng = [latitude, longitude];
+    const latlng: TLatLng = [latitude, longitude];
 
     // 최초 좌표는 저장하지 않음
     if (!lastPositionRef.current) {
@@ -126,7 +130,7 @@ export default function Tracker() {
     setIsLock(true);
 
     // 초기 좌표를 위치 배열에 저장
-    setSegments([[initialPosition as LatLng]]);
+    setSegments([[initialPosition as TLatLng]]);
 
     hasStartedTracking.current = false;
 
@@ -184,40 +188,7 @@ export default function Tracker() {
     setTrackingStatus('finished');
   };
 
-  const currentPosition: LatLng = allPositions.at(-1) ?? [37.5665, 126.978];
-
-  // 기록 저장
-  const handleRegistRun = useCallback(async () => {
-    try {
-      const { code } = await request({
-        method: 'POST',
-        url: `/api/runs`,
-        body: {
-          startedAt,
-          endedAt,
-          route: segments,
-          distance,
-        },
-      });
-
-      if (code === 200) {
-        alert('저장 성공');
-      }
-    } finally {
-      setTrackingStatus('idle');
-    }
-  }, [distance, endedAt, segments, startedAt, setTrackingStatus]);
-
-  useEffect(() => {
-    if (trackingStatus === 'finished' && startedAt && endedAt) {
-      // 종료
-      if (!confirm('기록을 저장하시겠습니까?')) {
-        return setTrackingStatus('idle');
-      }
-
-      handleRegistRun();
-    }
-  }, [endedAt, handleRegistRun, startedAt, trackingStatus, setTrackingStatus]);
+  const currentPosition: TLatLng = allPositions.at(-1) ?? [37.5665, 126.978];
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -231,7 +202,7 @@ export default function Tracker() {
     // 위치 권한 요청 및 초기 위치 트래킹 시작
     preWatchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
-        const latlng: LatLng = [pos.coords.latitude, pos.coords.longitude];
+        const latlng: TLatLng = [pos.coords.latitude, pos.coords.longitude];
         setInitialPosition(latlng);
         setGpsStatus('acquired');
       },
