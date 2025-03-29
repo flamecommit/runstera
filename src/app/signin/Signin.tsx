@@ -35,6 +35,7 @@ const StyledSigninUI = styled.div`
     padding: 12px 24px;
     column-gap: 12px;
     border-radius: 4px;
+    border: 1px solid #ddd;
     &:before {
       display: block;
       content: '';
@@ -44,7 +45,7 @@ const StyledSigninUI = styled.div`
       background-size: 100%;
     }
     &:hover {
-      background-color: var(--secondary-color);
+      background-color: #f7f7f7;
     }
   }
 `;

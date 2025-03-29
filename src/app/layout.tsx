@@ -1,6 +1,5 @@
 import StyledComponentsRegistry from '@/components/config/registry';
 import AuthSession from '@/components/config/Session';
-import BaseTemplate from '@/components/template/BaseTemplate';
 import ClientLayout from '@/components/template/ClientLayout';
 import type { Metadata } from 'next';
 
@@ -19,9 +18,7 @@ export default function RootLayout({
       <body>
         <AuthSession>
           <StyledComponentsRegistry>
-            <ClientLayout>
-              <BaseTemplate>{children}</BaseTemplate>
-            </ClientLayout>
+            <ClientLayout>{children}</ClientLayout>
           </StyledComponentsRegistry>
         </AuthSession>
       </body>
