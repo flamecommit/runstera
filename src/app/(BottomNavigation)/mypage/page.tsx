@@ -11,7 +11,7 @@ export default function MypagePage() {
       <div className="mypage-list">
         <div className="row">
           <button type="button" onClick={() => signOut()}>
-            Sign Out
+            로그아웃
           </button>
         </div>
       </div>
@@ -22,10 +22,7 @@ export default function MypagePage() {
 const StyledMypagePage = styled.div`
   padding: 24px;
   .mypage-list {
-    border-top: 1px solid #ddd;
-    margin-inline: -24px;
     .row {
-      border-bottom: 1px solid #ddd;
       a,
       button {
         display: flex;
@@ -36,6 +33,7 @@ const StyledMypagePage = styled.div`
         text-align: left;
         font-weight: 700;
         font-size: 16px;
+        border-left: 2px solid #ddd;
       }
     }
   }

@@ -39,6 +39,14 @@ export default function RunDetail({
   return (
     <StyledRunDetail>
       <section>
+        <div className="label">제목</div>
+        <Input
+          className="title-input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </section>
+      <section>
         <div className="label">시작 시간</div>
         <div className="value-s">
           {formatDate(startedAt, 'YYYY-MM-DD hh:mm:ss')}
@@ -47,10 +55,6 @@ export default function RunDetail({
         <div className="value-s">
           {formatDate(endedAt, 'YYYY-MM-DD hh:mm:ss')}
         </div>
-      </section>
-      <section>
-        <div className="label">제목</div>
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
       </section>
       <section className="information">
         <div className="distance">
@@ -76,6 +80,14 @@ export default function RunDetail({
 const StyledRunDetail = styled.div`
   display: grid;
   row-gap: 24px;
+  .title-input {
+    height: 48px;
+    font-weight: 700;
+    font-size: 26px;
+    border-width: 0 0 2px;
+    border-color: #000;
+    padding: 0;
+  }
   .datetime {
     font-size: 20px;
   }

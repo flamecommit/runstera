@@ -279,6 +279,7 @@ export default function Tracker() {
             color="primary"
             disabled={gpsStatus !== 'acquired'}
             onClick={startTracking}
+            className="play"
           >
             {gpsStatus !== 'acquired' ? '준비중' : '시작'}
           </TrackerButton>
@@ -286,11 +287,16 @@ export default function Tracker() {
         {/* 달리는 중 */}
         {trackingStatus === 'running' && (
           <>
-            <TrackerButton color="black" onClick={() => setIsLock(!isLock)}>
+            <TrackerButton
+              color="black"
+              className={isLock ? 'lock' : 'unlock'}
+              onClick={() => setIsLock(!isLock)}
+            >
               {isLock ? '잠금' : '잠금해제'}
             </TrackerButton>
             <TrackerButton
               color="black"
+              className="pause"
               disabled={isLock}
               onClick={pauseTracking}
             >
@@ -301,10 +307,18 @@ export default function Tracker() {
         {/* 일시정지 */}
         {trackingStatus === 'paused' && (
           <>
-            <TrackerButton color="black" onClick={stopTracking}>
+            <TrackerButton
+              color="black"
+              className="stop"
+              onClick={stopTracking}
+            >
               종료
             </TrackerButton>
-            <TrackerButton color="primary" onClick={resumeTracking}>
+            <TrackerButton
+              color="primary"
+              className="play"
+              onClick={resumeTracking}
+            >
               계속
             </TrackerButton>
           </>

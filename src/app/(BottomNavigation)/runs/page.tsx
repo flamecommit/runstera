@@ -1,7 +1,7 @@
 'use client';
 
+import GlobalSpinner from '@/components/common/GlobalSpinner';
 import PageTitle from '@/components/common/PageTitle';
-import Spinner from '@/components/common/Spinner';
 import { useRunStore } from '@/stores/run';
 import { useUserStore } from '@/stores/user';
 import { Roboto } from '@/styles/fonts';
@@ -29,7 +29,7 @@ export default function RunsPage() {
     <StyledRunsPage>
       <PageTitle>Runs</PageTitle>
       {userStore === null || runsPending ? (
-        <Spinner absolute={false} height={500} />
+        <GlobalSpinner />
       ) : (
         <div className="run-list">
           {runStore.map((item) => {

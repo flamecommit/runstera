@@ -6,7 +6,7 @@ import { useRunStore } from '@/stores/run';
 import { useTrackerStore } from '@/stores/tracker';
 import { useGlobalSpinner } from '@/stores/ui';
 import { useUserStore } from '@/stores/user';
-import { formatDate } from '@/utils/datetime';
+import { formatDate, getTimeOfDay } from '@/utils/datetime';
 import { getTotalDistance } from '@/utils/distance';
 import request from '@/utils/request';
 import { useRouter } from 'next/navigation';
@@ -29,7 +29,9 @@ export default function RunResult() {
     setTrackingStatus,
   } = useTrackerStore();
   const [title, setTitle] = useState<string>(
-    `${formatDate(startedAt, 'YYYY-MM-DD hh:mm')} 달리기`,
+    `${formatDate(startedAt, 'YYYY-MM-DD')} ${getTimeOfDay(
+      startedAt as Date,
+    )} 달리기`,
   );
   const distance = segments.reduce(
     (sum, segment) => sum + getTotalDistance(segment),

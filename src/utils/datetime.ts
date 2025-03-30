@@ -24,3 +24,13 @@ export const formatDate = (dateObj: Date | null, format: string) => {
     .replace(/mm/g, minutes)
     .replace(/ss/g, seconds);
 };
+
+export function getTimeOfDay(date: Date = new Date()): string {
+  const hour = date.getHours();
+
+  if (hour >= 3 && hour < 6) return '새벽';
+  if (hour >= 6 && hour < 11) return '아침';
+  if (hour >= 11 && hour < 17) return '낮';
+  if (hour >= 17 && hour < 20) return '저녁';
+  return '밤';
+}
