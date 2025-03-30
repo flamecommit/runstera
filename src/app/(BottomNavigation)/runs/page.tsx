@@ -29,7 +29,7 @@ export default function RunsPage() {
     <StyledRunsPage>
       <PageTitle>Runs</PageTitle>
       {userStore === null || runsPending ? (
-        <Spinner absolute={false} />
+        <Spinner absolute={false} height={500} />
       ) : (
         <div className="run-list">
           {runStore.map((item) => {

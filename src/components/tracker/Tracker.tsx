@@ -1,7 +1,8 @@
 import TrackerButton from '@/components/tracker/Button';
 import { useTrackerStore } from '@/stores/tracker';
 import { Roboto } from '@/styles/fonts';
-import { TLatLng } from '@/types/tracker';
+import { color } from '@/styles/variable';
+import { TLatLng, TTrackingStatus } from '@/types/tracker';
 import {
   formatDuration,
   getDistanceFromLatLonInMeters,
@@ -32,7 +33,13 @@ const MapCenterSetter = ({ center }: { center: TLatLng }) => {
   return null;
 };
 
-const LocationMarker = ({ position }: { position: TLatLng }) => {
+const RunningMarker = ({
+  position,
+  status,
+}: {
+  position: TLatLng;
+  status: TTrackingStatus;
+}) => {
   const map = useMap();
   useEffect(() => {
     map.setView(position, 16); // 사용자의 위치 중심으로 이동
@@ -43,7 +50,7 @@ const LocationMarker = ({ position }: { position: TLatLng }) => {
       position={position}
       icon={divIcon({
         className: 'marker-icon',
-        html: '<div style="background: red; border-radius: 50%; width: 16px; height: 16px;" />',
+        html: `<div class="marker-icon" data-status="${status}" />`,
         iconSize: [16, 16],
       })}
     />
@@ -185,7 +192,7 @@ export default function Tracker() {
     setTrackingStatus('finished');
   };
 
-  const currentPosition: TLatLng = allPositions.at(-1) ?? [37.5665, 126.978];
+  const currentPosition = allPositions.at(-1);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -231,21 +238,11 @@ export default function Tracker() {
         keyboard={false} // 🛑 키보드 제어 막기
       >
         {initialPosition && <MapCenterSetter center={initialPosition} />}
-
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
-        {initialPosition && trackingStatus === 'idle' && (
-          <Marker
-            position={initialPosition}
-            icon={divIcon({
-              className: 'marker-icon',
-              html: '<div style="background: blue; border-radius: 50%; width: 16px; height: 16px;" />',
-              iconSize: [16, 16],
-            })}
-          />
-        )}
-        {allPositions.length > 0 && trackingStatus !== 'idle' && (
-          <LocationMarker position={currentPosition} />
-        )}
+        <RunningMarker
+          position={currentPosition || initialPosition || centerPosition}
+          status={trackingStatus}
+        />
         {segments.map((segment, i) =>
           segment.length > 1 ? <Polyline key={i} positions={segment} /> : null,
         )}
@@ -307,6 +304,62 @@ const StyledTracker = styled.div`
   position: absolute;
   inset: 0;
   height: 100%;
+  @keyframes pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0.6;
+    }
+    70% {
+      transform: translate(-50%, -50%) scale(2.5);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  .marker-icon {
+    width: 16px;
+    height: 16px;
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse 2s infinite;
+      opacity: 0.6;
+      z-index: 1;
+    }
+    &:after {
+      display: block;
+      content: '';
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    &[data-status='paused'],
+    &[data-status='idle'] {
+      &:before {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      &:after {
+        background-color: #000;
+      }
+    }
+    &[data-status='running'] {
+      &:before {
+        background-color: rgb(254, 151, 58, 0.5);
+      }
+      &:after {
+        background-color: ${color.primary};
+      }
+    }
+  }
   .tracker-button-area {
     position: absolute;
     bottom: 12%;

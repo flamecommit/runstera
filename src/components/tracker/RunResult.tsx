@@ -2,6 +2,7 @@
 
 import Button from '@/components/common/Button';
 import RunDetail from '@/components/runs/RunDetail';
+import { useRunStore } from '@/stores/run';
 import { useTrackerStore } from '@/stores/tracker';
 import { useGlobalSpinner } from '@/stores/ui';
 import { useUserStore } from '@/stores/user';
@@ -13,8 +14,9 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 export default function RunResult() {
-  const { data: user } = useUserStore();
+  const { data: userStore } = useUserStore();
   const { setPending } = useGlobalSpinner();
+  const { fetch: fetchRuns } = useRunStore();
   const {
     startedAt,
     endedAt,
@@ -33,7 +35,7 @@ export default function RunResult() {
     (sum, segment) => sum + getTotalDistance(segment),
     0,
   );
-  const route = useRouter();
+  const router = useRouter();
 
   // 기록 저장
   const handleRegistResult = useCallback(async () => {
@@ -44,7 +46,7 @@ export default function RunResult() {
         method: 'POST',
         url: `/api/runs`,
         body: {
-          user_uuid: user?.uuid,
+          user_uuid: userStore?.uuid,
           startedAt,
           endedAt,
           title,
@@ -55,12 +57,17 @@ export default function RunResult() {
       });
 
       if (code === 200) {
+        if (userStore !== null) {
+          fetchRuns(userStore.uuid);
+        }
         alert('저장 성공');
         setTrackingStatus('idle');
         setStartedAt(null);
         setEndedAt(null);
         setDuration(0);
         setSegments([]);
+
+        router.push('/runs');
       }
     } catch {
       alert('저장 실패, 다시 시도해주세요.');
@@ -80,7 +87,7 @@ export default function RunResult() {
     setTrackingStatus,
     startedAt,
     title,
-    user?.uuid,
+    userStore?.uuid,
   ]);
 
   const handleDeleteResult = () => {
@@ -92,7 +99,7 @@ export default function RunResult() {
     setDuration(0);
     setSegments([]);
 
-    route.push('/tracker');
+    router.push('/tracker');
   };
 
   return (

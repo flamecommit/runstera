@@ -45,7 +45,7 @@ const StyledSpinner = styled.div<{ $height?: number }>`
       content: '';
       width: 36px;
       height: 36px;
-      border: 4px solid #000;
+      border: 4px solid #fff;
       border-bottom-color: transparent;
       border-radius: 50%;
       display: inline-block;

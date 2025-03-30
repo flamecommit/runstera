@@ -50,7 +50,7 @@ const StyledSpinner = styled.div<{ $background: string }>`
       content: '';
       width: 60px;
       height: 60px;
-      border: 5px solid var(--reverse-color);
+      border: 5px solid #fff;
       border-bottom-color: transparent;
       border-radius: 50%;
       display: inline-block;
