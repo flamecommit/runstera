@@ -315,7 +315,8 @@ export default function Tracker() {
 }
 
 const StyledTracker = styled.div`
-  position: absolute;
+  overflow: hidden;
+  position: fixed;
   inset: 0;
   height: 100%;
   @keyframes pulse {
