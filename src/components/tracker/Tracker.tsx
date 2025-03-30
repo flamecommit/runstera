@@ -34,13 +34,23 @@ const MapCenterSetter = ({ center }: { center: TLatLng }) => {
 };
 
 const RunningMarker = ({
-  position,
+  lastSegmentsPosition,
+  currentPosition,
+  initialPosition,
   status,
 }: {
-  position: TLatLng;
+  lastSegmentsPosition?: TLatLng | null;
+  currentPosition: TLatLng | null;
+  initialPosition: TLatLng;
   status: TTrackingStatus;
 }) => {
   const map = useMap();
+  const position = (
+    ['idle', 'paused'].includes(status)
+      ? currentPosition || initialPosition
+      : lastSegmentsPosition
+  ) as TLatLng;
+
   useEffect(() => {
     map.setView(position, 16); // 사용자의 위치 중심으로 이동
   }, [position, map]);
@@ -82,9 +92,9 @@ export default function Tracker() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastPositionRef = useRef<TLatLng | null>(null);
   const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
-  const [initialPosition, setInitialPosition] = useState<TLatLng | null>(null);
+  const [currentPosition, setCurrentPosition] = useState<TLatLng | null>(null);
   const preWatchIdRef = useRef<number | null>(null);
-  const centerPosition: TLatLng = [37.5665, 126.978];
+  const initialPosition: TLatLng = [37.5665, 126.978];
 
   const handleWatchPosition = (pos: GeolocationPosition) => {
     // 최초 1회만 실행, 타이머 실행
@@ -134,7 +144,7 @@ export default function Tracker() {
     setStartedAt(new Date());
 
     // 초기 좌표를 위치 배열에 저장
-    setSegments([[initialPosition as TLatLng]]);
+    setSegments([[currentPosition as TLatLng]]);
 
     hasStartedTracking.current = false;
 
@@ -192,7 +202,7 @@ export default function Tracker() {
     setTrackingStatus('finished');
   };
 
-  const currentPosition = allPositions.at(-1);
+  const lastSegmentsPosition = allPositions.at(-1) || null;
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -207,7 +217,7 @@ export default function Tracker() {
     preWatchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
         const latlng: TLatLng = [pos.coords.latitude, pos.coords.longitude];
-        setInitialPosition(latlng);
+        setCurrentPosition(latlng);
         setGpsStatus('acquired');
       },
       (err) => {
@@ -228,7 +238,7 @@ export default function Tracker() {
   return (
     <StyledTracker>
       <MapContainer
-        center={centerPosition}
+        center={initialPosition}
         zoom={16}
         style={{ height: '100%' }}
         zoomControl={false} // + / - 버튼 제거
@@ -237,10 +247,12 @@ export default function Tracker() {
         doubleClickZoom={false} // 🛑 더블클릭 확대 막기
         keyboard={false} // 🛑 키보드 제어 막기
       >
-        {initialPosition && <MapCenterSetter center={initialPosition} />}
+        {currentPosition && <MapCenterSetter center={currentPosition} />}
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
         <RunningMarker
-          position={currentPosition || initialPosition || centerPosition}
+          lastSegmentsPosition={lastSegmentsPosition}
+          currentPosition={currentPosition}
+          initialPosition={initialPosition}
           status={trackingStatus}
         />
         {segments.map((segment, i) =>
