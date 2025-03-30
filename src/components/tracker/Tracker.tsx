@@ -257,7 +257,7 @@ export default function Tracker() {
         />
         {segments.map((segment, i) =>
           segment.length > 1 ? (
-            <Polyline key={i} positions={segment} color={`${color.primary}`} />
+            <Polyline key={i} positions={segment} color={color.primary} />
           ) : null,
         )}
       </MapContainer>

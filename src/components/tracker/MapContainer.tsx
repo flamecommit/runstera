@@ -1,5 +1,6 @@
 'use client';
 
+import { color } from '@/styles/variable';
 import { TLatLng } from '@/types/tracker';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
@@ -36,7 +37,9 @@ export default function MapContainerNoSSR({ segments }: IProps) {
     >
       <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
       {segments.map((segment, i) =>
-        segment.length > 1 ? <Polyline key={i} positions={segment} /> : null,
+        segment.length > 1 ? (
+          <Polyline key={i} positions={segment} color={color.primary} />
+        ) : null,
       )}
     </MapContainer>
   );
