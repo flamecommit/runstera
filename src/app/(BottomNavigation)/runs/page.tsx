@@ -1,5 +1,6 @@
 'use client';
 
+import PageTitle from '@/components/common/PageTitle';
 import { useRunStore } from '@/stores/run';
 import { useUserStore } from '@/stores/user';
 import { Roboto } from '@/styles/fonts';
@@ -41,7 +42,7 @@ export default function RunsPage() {
 
   return (
     <StyledRunsPage>
-      <div className="page-title">Runs</div>
+      <PageTitle>Runs</PageTitle>
       <div className="run-list">
         {runStore.map((item) => {
           return (
@@ -73,11 +74,6 @@ export default function RunsPage() {
 
 const StyledRunsPage = styled.div`
   padding: 24px;
-  .page-title {
-    font-weight: 700;
-    font-size: 24px;
-    margin-bottom: 24px;
-  }
   .run-list {
     display: grid;
     row-gap: 36px;

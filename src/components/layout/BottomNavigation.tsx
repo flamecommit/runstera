@@ -10,9 +10,9 @@ export default function BottomNavigation() {
   return (
     <StyledBottomNavigation data-tracking-status={trackingStatus}>
       <div className="center">
-        <Link href="/dashboard" className="dashboard">
+        {/* <Link href="/dashboard" className="dashboard">
           Dashboard
-        </Link>
+        </Link> */}
         <Link href="/tracker" className="tracker">
           Tracker
         </Link>

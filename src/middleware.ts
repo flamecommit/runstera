@@ -15,7 +15,7 @@ export default async function middleware(req: NextRequest) {
   );
 
   if ((isExactPublic || isPrefixPublic) && token) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
+    return NextResponse.redirect(new URL('/tracker', req.url));
   }
 
   if (!token && !isExactPublic && !isPrefixPublic) {

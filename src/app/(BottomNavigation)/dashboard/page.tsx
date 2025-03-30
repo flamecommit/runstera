@@ -1,13 +1,15 @@
 'use client';
 
+import PageTitle from '@/components/common/PageTitle';
 import { useUserStore } from '@/stores/user';
+import styled from 'styled-components';
 
 export default function DashboardPage() {
   const { data: user } = useUserStore();
 
   return (
-    <div>
-      <div>Dashboard</div>
+    <StyledDashboardPage>
+      <PageTitle>Dashboard</PageTitle>
       {user !== null && (
         <div>
           <div>name: {user.name}</div>
@@ -17,6 +19,10 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </div>
+    </StyledDashboardPage>
   );
 }
+
+const StyledDashboardPage = styled.div`
+  padding: 24px;
+`;
