@@ -13,7 +13,7 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async redirect() {
-      return '/dashboard';
+      return '/tracker';
     },
   },
 };
