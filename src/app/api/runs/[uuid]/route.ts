@@ -5,20 +5,17 @@ import {
 } from '@/app/api/utils';
 import { RUN_TABLE } from '@/constants/table';
 import { ResponseError, ResponseSuccess } from '@/utils/response';
+import { NextRequest } from 'next/server';
 
 const RANGE = `${RUN_TABLE}!A:Z`;
 
 // Runs 상세 조회
 export async function GET(
-  req: Request,
-  {
-    params,
-  }: {
-    params: { uuid: string };
-  },
+  req: NextRequest,
+  context: { params: { uuid: string } },
 ) {
   try {
-    const { uuid } = await params;
+    const { uuid } = context.params;
     if (!uuid) {
       return ResponseError(50104);
     }

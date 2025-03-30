@@ -60,7 +60,7 @@ export async function GET(req: Request) {
     const filtered = jsonData.filter((item) => item.user_uuid === user_uuid);
 
     const sorted = filtered.sort((a, b) =>
-      a.started_at.toString().localeCompare(b.started_at.toString()),
+      b.started_at.toString().localeCompare(a.started_at.toString()),
     );
 
     return ResponseSuccess(sorted);
