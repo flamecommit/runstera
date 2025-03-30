@@ -41,7 +41,6 @@ export default function RunDetailPage({ run }: IProps) {
         if (userStore !== null) {
           fetchRuns(userStore?.uuid);
         }
-        alert('저장 성공');
         router.refresh();
       }
     } catch {
@@ -49,7 +48,7 @@ export default function RunDetailPage({ run }: IProps) {
     } finally {
       setPending(false);
     }
-  }, [setPending, run.uuid, title]);
+  }, [setPending, run.uuid, title, userStore, router, fetchRuns]);
 
   // 기록 삭제
   const handleDeleteRun = useCallback(async () => {
@@ -67,7 +66,6 @@ export default function RunDetailPage({ run }: IProps) {
         if (userStore !== null) {
           fetchRuns(userStore?.uuid);
         }
-        alert('삭제 성공');
         router.push('/runs');
       }
     } catch {
@@ -75,7 +73,7 @@ export default function RunDetailPage({ run }: IProps) {
     } finally {
       setPending(false);
     }
-  }, [setPending]);
+  }, [fetchRuns, router, run.uuid, setPending, userStore]);
 
   return (
     <StyledRunDetailPage>

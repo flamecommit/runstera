@@ -62,7 +62,6 @@ export default function RunResult() {
         if (userStore !== null) {
           fetchRuns(userStore.uuid);
         }
-        alert('저장 성공');
         setTrackingStatus('idle');
         setStartedAt(null);
         setEndedAt(null);
@@ -80,6 +79,8 @@ export default function RunResult() {
     distance,
     duration,
     endedAt,
+    fetchRuns,
+    router,
     segments,
     setDuration,
     setEndedAt,
@@ -89,7 +90,7 @@ export default function RunResult() {
     setTrackingStatus,
     startedAt,
     title,
-    userStore?.uuid,
+    userStore,
   ]);
 
   const handleDeleteResult = () => {

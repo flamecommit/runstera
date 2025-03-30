@@ -70,7 +70,7 @@ export default function RunDetail({
           <div className="value">{formatDuration(duration)}</div>
         </div>
       </section>
-      <section>
+      <section className="map-section">
         <MapContainerNoSSR segments={route} />
       </section>
     </StyledRunDetail>
@@ -114,5 +114,9 @@ const StyledRunDetail = styled.div`
     div {
       text-align: center;
     }
+  }
+  .map-section {
+    height: 300px;
+    background-color: #f7f7f7;
   }
 `;

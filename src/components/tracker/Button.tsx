@@ -37,6 +37,11 @@ const StyledTrackerButton = styled.button`
       mask-position: 36px center;
       background-color: #000;
     }
+    &:disabled {
+      &:after {
+        background-color: #fff;
+      }
+    }
   }
   &.lock {
     &:after {
