@@ -10,10 +10,18 @@ export default function BottomNavigation() {
   return (
     <StyledBottomNavigation data-tracking-status={trackingStatus}>
       <div className="center">
-        <Link href="/dashboard">Dashboard</Link>
-        <Link href="/tracker">Tracker</Link>
-        <Link href="/runs">Runs</Link>
-        <Link href="/mypage">Mypage</Link>
+        <Link href="/dashboard" className="dashboard">
+          Dashboard
+        </Link>
+        <Link href="/tracker" className="tracker">
+          Tracker
+        </Link>
+        <Link href="/runs" className="runs">
+          Runs
+        </Link>
+        <Link href="/mypage" className="mypage">
+          Mypage
+        </Link>
       </div>
     </StyledBottomNavigation>
   );
@@ -40,6 +48,37 @@ const StyledBottomNavigation = styled.nav`
       height: 60px;
       width: 100%;
       background-color: #f7f7f7;
+      font-size: 0;
+      &:after {
+        display: block;
+        content: '';
+        width: 40px;
+        height: 40px;
+      }
+      &.dashboard:after {
+        mask-image: url(/images/icons/dashboard.svg);
+        mask-size: 30px;
+        mask-position: center;
+        background-color: #000;
+      }
+      &.tracker:after {
+        mask-image: url(/images/icons/tracker.svg);
+        mask-size: 30px;
+        mask-position: center;
+        background-color: #000;
+      }
+      &.runs:after {
+        mask-image: url(/images/icons/runs.svg);
+        mask-size: 30px;
+        mask-position: center;
+        background-color: #000;
+      }
+      &.mypage:after {
+        mask-image: url(/images/icons/mypage.svg);
+        mask-size: 30px;
+        mask-position: center;
+        background-color: #000;
+      }
     }
   }
   &[data-tracking-status='idle'] {
