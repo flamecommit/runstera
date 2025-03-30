@@ -181,7 +181,7 @@ export default function Tracker() {
     intervalRef.current = setInterval(() => {
       setDuration((prev) => prev + 1);
     }, 1000);
-    setSegments((prev) => [...prev, []]);
+    setSegments((prev) => [...prev, [currentPosition as TLatLng]]);
     setIsLock(true);
     setTrackingStatus('running');
   };
@@ -256,7 +256,9 @@ export default function Tracker() {
           status={trackingStatus}
         />
         {segments.map((segment, i) =>
-          segment.length > 1 ? <Polyline key={i} positions={segment} /> : null,
+          segment.length > 1 ? (
+            <Polyline key={i} positions={segment} color={`${color.primary}`} />
+          ) : null,
         )}
       </MapContainer>
 
