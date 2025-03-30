@@ -50,27 +50,27 @@ const StyledBottomNavigation = styled.nav`
   z-index: 1000;
   transform: translateY(100px);
   transition: transform 500ms;
+  border-top: 1px solid #ddd;
+  background-color: #f7f7f7;
   .center {
     max-width: 768px;
     margin: 0 auto;
     display: flex;
     align-items: center;
-    border-top: 1px solid #ddd;
-    background-color: #f7f7f7;
     a {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 60px;
+      height: 48px;
       width: 100%;
       font-size: 0;
       &:after {
         display: block;
         content: '';
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         background-color: #000;
-        mask-size: 30px;
+        mask-size: 32px;
         mask-position: center;
       }
       &.dashboard:after {

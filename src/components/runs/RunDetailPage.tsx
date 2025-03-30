@@ -1,6 +1,8 @@
 'use client';
 
 import Button from '@/components/common/Button';
+import BackButton from '@/components/layout/BackButton';
+import Header from '@/components/layout/Header';
 import RunDetail from '@/components/runs/RunDetail';
 import { useRunStore } from '@/stores/run';
 import { useGlobalSpinner } from '@/stores/ui';
@@ -76,26 +78,31 @@ export default function RunDetailPage({ run }: IProps) {
   }, [fetchRuns, router, run.uuid, setPending, userStore]);
 
   return (
-    <StyledRunDetailPage>
-      <RunDetail
-        uuid={run.uuid}
-        startedAt={new Date(run.started_at)}
-        endedAt={new Date(run.ended_at)}
-        duration={run.duration}
-        distance={run.distance}
-        route={run.route}
-        title={title}
-        setTitle={setTitle}
-      />
-      <section className="bottom-button-area">
-        <Button color="black" onClick={handleDeleteRun}>
-          삭제하기
-        </Button>
-        <Button color="primary" onClick={handleRegistRun}>
-          저장하기
-        </Button>
-      </section>
-    </StyledRunDetailPage>
+    <>
+      <Header>
+        <BackButton />
+      </Header>
+      <StyledRunDetailPage>
+        <RunDetail
+          uuid={run.uuid}
+          startedAt={new Date(run.started_at)}
+          endedAt={new Date(run.ended_at)}
+          duration={run.duration}
+          distance={run.distance}
+          route={run.route}
+          title={title}
+          setTitle={setTitle}
+        />
+        <section className="bottom-button-area">
+          <Button color="black" onClick={handleDeleteRun}>
+            삭제하기
+          </Button>
+          <Button color="primary" onClick={handleRegistRun}>
+            저장하기
+          </Button>
+        </section>
+      </StyledRunDetailPage>
+    </>
   );
 }
 
