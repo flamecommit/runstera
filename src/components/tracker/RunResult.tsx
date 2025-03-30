@@ -1,22 +1,16 @@
 'use client';
 
-import Input from '@/components/form/Input';
+import Button from '@/components/common/Button';
+import RunDetail from '@/components/runs/RunDetail';
 import { useTrackerStore } from '@/stores/tracker';
 import { useGlobalSpinner } from '@/stores/ui';
 import { useUserStore } from '@/stores/user';
 import { formatDate } from '@/utils/datetime';
 import { getTotalDistance } from '@/utils/distance';
 import request from '@/utils/request';
-import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-
-const MapContainerNoSSR = dynamic(
-  () => import('@/components/tracker/MapContainer'),
-  {
-    ssr: false,
-  },
-);
 
 export default function RunResult() {
   const { data: user } = useUserStore();
@@ -39,11 +33,10 @@ export default function RunResult() {
     (sum, segment) => sum + getTotalDistance(segment),
     0,
   );
+  const route = useRouter();
 
   // 기록 저장
-  const handleRegistRun = useCallback(async () => {
-    if (!confirm('기록을 저장하시겠습니까?')) return;
-
+  const handleRegistResult = useCallback(async () => {
     setPending(true);
 
     try {
@@ -90,34 +83,47 @@ export default function RunResult() {
     user?.uuid,
   ]);
 
+  const handleDeleteResult = () => {
+    if (!confirm('기록을 삭제하시겠습니까?')) return;
+
+    setTrackingStatus('idle');
+    setStartedAt(null);
+    setEndedAt(null);
+    setDuration(0);
+    setSegments([]);
+
+    route.push('/tracker');
+  };
+
   return (
     <StyledRunResult>
-      <div>
-        <div>duration : {duration}s</div>
-        <div>distance : {distance}m</div>
-      </div>
-      <MapContainerNoSSR segments={segments} />
-      <table>
-        <colgroup>
-          <col style={{ width: 120 }} />
-          <col style={{ width: 'auto' }} />
-        </colgroup>
-        <tbody>
-          <tr>
-            <th>제목</th>
-            <td>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
-        <button type="button" onClick={handleRegistRun}>
+      <RunDetail
+        startedAt={startedAt}
+        endedAt={endedAt}
+        duration={duration}
+        distance={distance}
+        route={segments}
+        title={title}
+        setTitle={setTitle}
+      />
+      <section className="bottom-button-area">
+        <Button color="black" onClick={handleDeleteResult}>
+          삭제하기
+        </Button>
+        <Button color="primary" onClick={handleRegistResult}>
           저장하기
-        </button>
-      </div>
+        </Button>
+      </section>
     </StyledRunResult>
   );
 }
 
-const StyledRunResult = styled.div``;
+const StyledRunResult = styled.div`
+  padding: 24px 12px 96px;
+  display: grid;
+  row-gap: 24px;
+  .bottom-button-area {
+    display: flex;
+    column-gap: 12px;
+  }
+`;

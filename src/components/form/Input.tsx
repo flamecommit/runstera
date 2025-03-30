@@ -15,12 +15,12 @@ const StyledInput = styled.input`
   width: 100%;
   height: 40px;
   border-radius: 3px;
-  border: 1px solid var(--primary-border);
+  border: 1px solid #ddd;
   background-color: transparent;
-  color: var(--primary-font);
+  color: #000;
   font-size: 16px;
   &::placeholder {
-    color: var(--secondary-font);
+    color: #999;
   }
   /* &:read-only {
       background-color: #eeeeee;

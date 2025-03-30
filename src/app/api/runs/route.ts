@@ -37,7 +37,19 @@ export async function GET(req: Request) {
       .map((row: string[]) => {
         const obj: Record<string, TDatabaseValue> = {};
         headers.forEach((header: string, index: number) => {
-          const value: TDatabaseValue = row[index] || '';
+          let value: TDatabaseValue = row[index] || '';
+
+          if (header === 'distance' || header === 'duration') {
+            value = Number(row[index]);
+          }
+
+          if (header === 'route') {
+            try {
+              value = JSON.parse(row[index] || '[]');
+            } catch {
+              value = [];
+            }
+          }
 
           obj[header] = value;
         });

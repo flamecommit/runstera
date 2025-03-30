@@ -6,7 +6,7 @@ export interface IRun {
   ended_at: string;
   duration: number;
   route: TLatLng[][];
-  distance_m: string;
+  distance: number;
   created_at: string;
   updated_at: string;
 }

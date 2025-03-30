@@ -84,10 +84,6 @@ export default function Tracker() {
     if (!hasStartedTracking.current) {
       hasStartedTracking.current = true;
 
-      setStartedAt(new Date());
-      setEndedAt(null);
-      setDuration(0);
-
       intervalRef.current = setInterval(() => {
         setDuration((prev) => prev + 1);
       }, 1000);
@@ -128,6 +124,7 @@ export default function Tracker() {
     if (!navigator.geolocation) return alert('GPS를 지원하지 않습니다.');
 
     setIsLock(true);
+    setStartedAt(new Date());
 
     // 초기 좌표를 위치 배열에 저장
     setSegments([[initialPosition as TLatLng]]);

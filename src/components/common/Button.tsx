@@ -8,18 +8,21 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: 'primary' | 'black' | 'gray';
 }
 
-export default function TrackerButton({ color, ...rest }: IProps) {
+export default function Button({ color, ...rest }: IProps) {
   return (
-    <StyledTrackerButton data-color={color} {...rest}>
+    <StyledButton data-color={color} {...rest}>
       {rest.children}
-    </StyledTrackerButton>
+    </StyledButton>
   );
 }
 
-const StyledTrackerButton = styled.button`
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
+const StyledButton = styled.button`
+  width: 100%;
+  border-radius: 4px;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
   color: #fff;
   &[data-color='primary'] {
     background-color: ${color.primary};
@@ -28,9 +31,6 @@ const StyledTrackerButton = styled.button`
     background-color: #000;
   }
   &[data-color='gray'] {
-    background-color: #ccc;
-  }
-  &:disabled {
     background-color: #ccc;
   }
 `;

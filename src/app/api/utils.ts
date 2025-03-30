@@ -6,7 +6,7 @@ const SPREADSHEET_JSON_KEY = JSON.parse(
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
-export type TDatabaseValue = string | string[] | boolean;
+export type TDatabaseValue = string | string[] | boolean | number;
 
 export const SPREADSHEET_ID = process.env.SPREADSHEET_ID as string;
 
