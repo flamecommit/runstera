@@ -2,9 +2,12 @@
 
 import Button from '@/components/common/Button';
 import RunDetail from '@/components/runs/RunDetail';
+import { useRunStore } from '@/stores/run';
 import { useGlobalSpinner } from '@/stores/ui';
+import { useUserStore } from '@/stores/user';
 import { IRun } from '@/types/runs';
 import request from '@/utils/request';
+import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
@@ -15,6 +18,9 @@ interface IProps {
 export default function RunDetailPage({ run }: IProps) {
   const { setPending } = useGlobalSpinner();
   const [title, setTitle] = useState<string>(run.title);
+  const { data: userStore } = useUserStore();
+  const { fetch: fetchRuns } = useRunStore();
+  const router = useRouter();
 
   // 기록 저장
   const handleRegistRun = useCallback(async () => {
@@ -41,6 +47,32 @@ export default function RunDetailPage({ run }: IProps) {
     }
   }, [setPending, run.uuid, title]);
 
+  // 기록 삭제
+  const handleDeleteRun = useCallback(async () => {
+    if (!confirm('기록을 삭제하시겠습니까?')) return;
+
+    setPending(true);
+
+    try {
+      const { code } = await request({
+        method: 'DELETE',
+        url: `/api/runs/${run.uuid}`,
+      });
+
+      if (code === 200) {
+        if (userStore !== null) {
+          fetchRuns(userStore?.uuid);
+        }
+        alert('삭제 성공');
+        router.push('/runs');
+      }
+    } catch {
+      alert('삭제 실패, 다시 시도해주세요.');
+    } finally {
+      setPending(false);
+    }
+  }, [setPending]);
+
   return (
     <StyledRunDetailPage>
       <RunDetail
@@ -54,7 +86,9 @@ export default function RunDetailPage({ run }: IProps) {
         setTitle={setTitle}
       />
       <section className="bottom-button-area">
-        <Button color="black">삭제하기</Button>
+        <Button color="black" onClick={handleDeleteRun}>
+          삭제하기
+        </Button>
         <Button color="primary" onClick={handleRegistRun}>
           저장하기
         </Button>

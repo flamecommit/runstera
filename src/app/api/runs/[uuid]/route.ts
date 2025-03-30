@@ -76,3 +76,85 @@ export async function GET(
     return ResponseError(59999);
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: IParams;
+  },
+) {
+  try {
+    const { uuid } = await params;
+    if (!uuid) {
+      return ResponseError(50104);
+    }
+
+    const sheets = await getGoogleSheets();
+
+    // 1. 전체 데이터 가져오기
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE,
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length === 0) {
+      return ResponseError(50001); // 데이터 없음
+    }
+
+    const headers = rows[0];
+
+    // 2. uuid 컬럼의 인덱스 찾기
+    const uuidIndex = headers.indexOf('uuid');
+    if (uuidIndex === -1) {
+      return ResponseError(50002); // uuid 컬럼 없음
+    }
+
+    const dataRowIndex = rows.findIndex((row) => row[uuidIndex] === uuid);
+
+    console.log('dataRowIndex', dataRowIndex);
+
+    if (dataRowIndex === -1) {
+      return ResponseError(50003); // 해당 uuid 없음
+    }
+
+    const sheetInfo = await sheets.spreadsheets.get({
+      spreadsheetId: SPREADSHEET_ID,
+    });
+    const sheet = sheetInfo.data.sheets?.find(
+      (s) => s.properties?.title === RUN_TABLE,
+    );
+
+    if (!sheet || sheet.properties?.sheetId === undefined) {
+      return ResponseError(50101); // 시트 ID를 찾을 수 없음
+    }
+
+    const sheetId = sheet.properties.sheetId; // 시트 ID 가져오기
+
+    // 5. 삭제 요청 (행 삭제)
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: {
+        requests: [
+          {
+            deleteDimension: {
+              range: {
+                sheetId, // 기본값. 정확한 sheetId가 필요하면 별도 조회 필요
+                dimension: 'ROWS',
+                startIndex: dataRowIndex,
+                endIndex: dataRowIndex + 1,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return ResponseSuccess({ deleted: true });
+  } catch (e) {
+    console.error(e);
+    return ResponseError(59999);
+  }
+}

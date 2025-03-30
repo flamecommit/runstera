@@ -1,73 +1,64 @@
 'use client';
 
 import PageTitle from '@/components/common/PageTitle';
+import Spinner from '@/components/common/Spinner';
 import { useRunStore } from '@/stores/run';
 import { useUserStore } from '@/stores/user';
 import { Roboto } from '@/styles/fonts';
-import { IRun } from '@/types/runs';
 import { formatDate } from '@/utils/datetime';
 import { formatDuration, getPace } from '@/utils/distance';
-import request from '@/utils/request';
 import Link from 'next/link';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 export default function RunsPage() {
   const { data: userStore } = useUserStore();
-  const { data: runStore, setData: setRunStore } = useRunStore();
-
-  const getRunsData = useCallback(async () => {
-    try {
-      const { code, data } = await request<IRun[]>({
-        method: 'GET',
-        url: `/api/runs`,
-        searchParams: {
-          user_uuid: userStore?.uuid,
-        },
-      });
-
-      if (code === 200) {
-        setRunStore(data);
-      }
-    } catch {
-      console.error('error');
-    }
-  }, [setRunStore, userStore?.uuid]);
+  const {
+    data: runStore,
+    pending: runsPending,
+    fetch: fetchRuns,
+  } = useRunStore();
 
   useEffect(() => {
-    if (runStore.length === 0) {
-      getRunsData();
+    if (runStore.length === 0 && userStore !== null) {
+      fetchRuns(userStore?.uuid);
     }
-  }, [getRunsData, runStore.length]);
+  }, [fetchRuns, runStore.length, userStore?.uuid]);
 
   return (
     <StyledRunsPage>
       <PageTitle>Runs</PageTitle>
-      <div className="run-list">
-        {runStore.map((item) => {
-          return (
-            <Link
-              href={`/runs/${item.uuid}`}
-              className="run-item"
-              key={item.uuid}
-            >
-              <div className="started-at">
-                {formatDate(new Date(item.started_at), 'YYYY-MM-DD')}
-              </div>
-              <div className="title">{item.title}</div>
-              <div className="information">
-                <div className="distance">
-                  {(item.distance / 1000).toFixed(2)}km
+      {userStore === null || runsPending ? (
+        <Spinner absolute={false} />
+      ) : (
+        <div className="run-list">
+          {runStore.map((item) => {
+            return (
+              <Link
+                href={`/runs/${item.uuid}`}
+                className="run-item"
+                key={item.uuid}
+              >
+                <div className="started-at">
+                  {formatDate(new Date(item.started_at), 'YYYY-MM-DD')}
                 </div>
-                <div className="duration">
-                  {getPace(item.distance, item.duration)}
+                <div className="title">{item.title}</div>
+                <div className="information">
+                  <div className="distance">
+                    {(item.distance / 1000).toFixed(2)}km
+                  </div>
+                  <div className="duration">
+                    {getPace(item.distance, item.duration)}
+                  </div>
+                  <div className="duration">
+                    {formatDuration(item.duration)}
+                  </div>
                 </div>
-                <div className="duration">{formatDuration(item.duration)}</div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </StyledRunsPage>
   );
 }
