@@ -158,3 +158,72 @@ export async function DELETE(
     return ResponseError(59999);
   }
 }
+
+export async function PUT(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: IParams;
+  },
+) {
+  try {
+    const { uuid } = await params;
+    if (!uuid) {
+      return ResponseError(50104); // uuid 없음
+    }
+
+    const body = await req.json();
+    const { title } = body;
+    if (typeof title !== 'string' || title.trim() === '') {
+      return ResponseError(50105); // 유효하지 않은 title
+    }
+
+    const sheets = await getGoogleSheets();
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE,
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length <= 1) {
+      return ResponseError(50001); // 데이터 없음
+    }
+
+    const headers = rows[0];
+    const uuidIndex = headers.indexOf('uuid');
+    const titleIndex = headers.indexOf('title');
+
+    if (uuidIndex === -1 || titleIndex === -1) {
+      return ResponseError(50002); // 필요한 컬럼 없음
+    }
+
+    const dataRows = rows.slice(1);
+    const dataRowIndex = dataRows.findIndex((row) => row[uuidIndex] === uuid);
+
+    if (dataRowIndex === -1) {
+      return ResponseError(50003); // 해당 uuid 없음
+    }
+
+    const sheetRowIndex = dataRowIndex + 1; // 헤더 보정
+
+    const targetCell = `${String.fromCharCode(65 + titleIndex)}${
+      sheetRowIndex + 1
+    }`; // 예: 'C5'
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${RUN_TABLE}!${targetCell}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[title]],
+      },
+    });
+
+    return ResponseSuccess({ updated: true });
+  } catch (e) {
+    console.error('PUT error:', e);
+    return ResponseError(59999);
+  }
+}

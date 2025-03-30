@@ -38,7 +38,11 @@ export default function RunDetailPage({ run }: IProps) {
       });
 
       if (code === 200) {
+        if (userStore !== null) {
+          fetchRuns(userStore?.uuid);
+        }
         alert('저장 성공');
+        router.refresh();
       }
     } catch {
       alert('저장 실패, 다시 시도해주세요.');
