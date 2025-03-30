@@ -9,16 +9,21 @@ import { NextRequest } from 'next/server';
 
 const RANGE = `${RUN_TABLE}!A:Z`;
 
-type IContext = {
-  params: {
-    uuid: string;
-  };
-};
+type IParams = Promise<{
+  uuid: string;
+}>;
 
 // Runs 상세 조회
-export async function GET(req: NextRequest, { params }: IContext) {
+export async function GET(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: IParams;
+  },
+) {
   try {
-    const { uuid } = params;
+    const { uuid } = await params;
     if (!uuid) {
       return ResponseError(50104);
     }
