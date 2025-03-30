@@ -1,4 +1,4 @@
-import Preload from '@/components/common/Preload';
+import ImagePreloader from '@/components/common/ImagePreloader';
 import StyledComponentsRegistry from '@/components/config/registry';
 import AuthSession from '@/components/config/Session';
 import ClientLayout from '@/components/template/ClientLayout';
@@ -19,7 +19,7 @@ export default function RootLayout({
       <body>
         <AuthSession>
           <StyledComponentsRegistry>
-            <Preload />
+            <ImagePreloader />
             <ClientLayout>{children}</ClientLayout>
           </StyledComponentsRegistry>
         </AuthSession>
