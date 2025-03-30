@@ -1,11 +1,14 @@
 'use client';
 
 import { useTrackerStore } from '@/stores/tracker';
+import { color } from '@/styles/variable';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 
 export default function BottomNavigation() {
   const { trackingStatus } = useTrackerStore();
+  const pathname = usePathname();
 
   return (
     <StyledBottomNavigation data-tracking-status={trackingStatus}>
@@ -13,13 +16,25 @@ export default function BottomNavigation() {
         {/* <Link href="/dashboard" className="dashboard">
           Dashboard
         </Link> */}
-        <Link href="/tracker" className="tracker">
+        <Link
+          href="/tracker"
+          className="tracker"
+          data-active={pathname === '/tracker'}
+        >
           Tracker
         </Link>
-        <Link href="/runs" className="runs">
+        <Link
+          href="/runs"
+          className="runs"
+          data-active={pathname.startsWith('/runs')}
+        >
           Runs
         </Link>
-        <Link href="/mypage" className="mypage">
+        <Link
+          href="/mypage"
+          className="mypage"
+          data-active={pathname.startsWith('/mypage')}
+        >
           Mypage
         </Link>
       </div>
@@ -41,43 +56,37 @@ const StyledBottomNavigation = styled.nav`
     display: flex;
     align-items: center;
     border-top: 1px solid #ddd;
+    background-color: #f7f7f7;
     a {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 60px;
       width: 100%;
-      background-color: #f7f7f7;
       font-size: 0;
       &:after {
         display: block;
         content: '';
         width: 40px;
         height: 40px;
+        background-color: #000;
+        mask-size: 30px;
+        mask-position: center;
       }
       &.dashboard:after {
         mask-image: url(/images/icons/dashboard.svg);
-        mask-size: 30px;
-        mask-position: center;
-        background-color: #000;
       }
       &.tracker:after {
         mask-image: url(/images/icons/tracker.svg);
-        mask-size: 30px;
-        mask-position: center;
-        background-color: #000;
       }
       &.runs:after {
         mask-image: url(/images/icons/runs.svg);
-        mask-size: 30px;
-        mask-position: center;
-        background-color: #000;
       }
       &.mypage:after {
         mask-image: url(/images/icons/mypage.svg);
-        mask-size: 30px;
-        mask-position: center;
-        background-color: #000;
+      }
+      &[data-active='true']:after {
+        background-color: ${color.primary};
       }
     }
   }
