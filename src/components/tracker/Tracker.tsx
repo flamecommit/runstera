@@ -273,6 +273,10 @@ export default function Tracker() {
         </div>
       )}
 
+      {gpsStatus !== 'acquired' && (
+        <div className="loading-gps">Loading GPS...</div>
+      )}
+
       <div className="tracker-button-area">
         {/* 시작 전 */}
         {trackingStatus === 'idle' && (
@@ -389,6 +393,20 @@ const StyledTracker = styled.div`
         background-color: ${color.primary};
       }
     }
+  }
+  .loading-gps {
+    position: fixed;
+    z-index: 1001;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 36px;
+    color: #fff;
+    font-family: ${Roboto};
+    font-style: italic;
   }
   .tracker-button-area {
     position: absolute;
