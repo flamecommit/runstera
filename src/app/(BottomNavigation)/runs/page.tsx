@@ -30,7 +30,7 @@ export default function RunsPage() {
       <PageTitle>Runs</PageTitle>
       {userStore === null || runsPending ? (
         <GlobalSpinner />
-      ) : (
+      ) : runStore.length > 0 ? (
         <div className="run-list">
           {runStore.map((item) => {
             return (
@@ -58,6 +58,8 @@ export default function RunsPage() {
             );
           })}
         </div>
+      ) : (
+        <div className="run-empty">No Data</div>
       )}
     </StyledRunsPage>
   );
@@ -92,5 +94,12 @@ const StyledRunsPage = styled.div`
         }
       }
     }
+  }
+  .run-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 160px;
+    background-color: #f7f7f7;
   }
 `;
