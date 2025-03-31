@@ -80,6 +80,8 @@ export default function Tracker() {
     setDuration,
     segments,
     setSegments,
+    currentPosition,
+    setCurrentPosition,
   } = useTrackerStore();
   const [isLock, setIsLock] = useState<boolean>(false);
   const [gpsStatus, setGpsStatus] = useState<GpsStatus>('idle');
@@ -92,7 +94,6 @@ export default function Tracker() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastPositionRef = useRef<TLatLng | null>(null);
   const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
-  const [currentPosition, setCurrentPosition] = useState<TLatLng | null>(null);
   const preWatchIdRef = useRef<number | null>(null);
   const initialPosition: TLatLng = [37.5665, 126.978];
 
@@ -233,7 +234,7 @@ export default function Tracker() {
         navigator.geolocation.clearWatch(preWatchIdRef.current);
       }
     };
-  }, []);
+  }, [setCurrentPosition]);
 
   return (
     <StyledTracker>

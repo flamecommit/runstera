@@ -15,6 +15,8 @@ interface ITrackerStore {
   setDuration: Setter<number>;
   segments: TLatLng[][];
   setSegments: Setter<TLatLng[][]>;
+  currentPosition: TLatLng | null;
+  setCurrentPosition: Setter<TLatLng | null>;
 }
 
 // 공통 setter 생성기
@@ -43,5 +45,7 @@ export const useTrackerStore = create<ITrackerStore>((_set) => {
     setDuration: createSetter<number>('duration'),
     segments: [],
     setSegments: createSetter<TLatLng[][]>('segments'),
+    currentPosition: null,
+    setCurrentPosition: createSetter<TLatLng | null>('currentPosition'),
   };
 });
