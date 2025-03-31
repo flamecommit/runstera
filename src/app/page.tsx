@@ -1,13 +1,9 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import styled from 'styled-components';
 
 export default function RootPage() {
-  const { data: session } = useSession();
-
-  console.log('session', session);
-
   return (
     <StyledRootPage>
       <div className="app-name">Runstera</div>
