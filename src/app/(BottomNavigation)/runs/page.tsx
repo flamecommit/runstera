@@ -23,7 +23,7 @@ export default function RunsPage() {
     if (runStore.length === 0 && userStore !== null) {
       fetchRuns(userStore?.uuid);
     }
-  }, [fetchRuns, runStore.length, userStore?.uuid]);
+  }, [fetchRuns, runStore.length, userStore, userStore?.uuid]);
 
   return (
     <StyledRunsPage>

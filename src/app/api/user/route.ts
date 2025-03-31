@@ -75,9 +75,8 @@ export async function POST(req: Request) {
     const existing = rows.slice(1).find((row) => row[emailIndex] === email);
 
     if (existing) {
-      const jsonData: Record<string, TDatabaseValue>[] = rows
-        .slice(1)
-        .map((row: string[]) => {
+      const jsonData: Record<string, TDatabaseValue>[] = [existing].map(
+        (row: string[]) => {
           const obj: Record<string, TDatabaseValue> = {};
           headers.forEach((header: string, index: number) => {
             const value: TDatabaseValue = row[index] || '';
@@ -85,7 +84,8 @@ export async function POST(req: Request) {
             obj[header] = value;
           });
           return obj;
-        });
+        },
+      );
 
       return ResponseSuccess(jsonData[0]);
     }
