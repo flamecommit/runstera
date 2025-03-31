@@ -21,8 +21,6 @@ import {
 } from 'react-leaflet';
 import styled from 'styled-components';
 
-type GpsStatus = 'idle' | 'requesting' | 'acquired' | 'error';
-
 const MapCenterSetter = ({ center }: { center: TLatLng }) => {
   const map = useMap();
 
@@ -81,10 +79,9 @@ export default function Tracker() {
     segments,
     setSegments,
     currentPosition,
-    setCurrentPosition,
+    gpsStatus,
   } = useTrackerStore();
   const [isLock, setIsLock] = useState<boolean>(false);
-  const [gpsStatus, setGpsStatus] = useState<GpsStatus>('idle');
   const allPositions = segments.flat();
   const distance = segments.reduce(
     (sum, segment) => sum + getTotalDistance(segment),
@@ -94,7 +91,6 @@ export default function Tracker() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastPositionRef = useRef<TLatLng | null>(null);
   const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
-  const preWatchIdRef = useRef<number | null>(null);
   const initialPosition: TLatLng = [37.5665, 126.978];
 
   const handleWatchPosition = (pos: GeolocationPosition) => {
@@ -204,37 +200,6 @@ export default function Tracker() {
   };
 
   const lastSegmentsPosition = allPositions.at(-1) || null;
-
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      alert('이 브라우저는 GPS를 지원하지 않습니다.');
-      setGpsStatus('error');
-      return;
-    }
-
-    setGpsStatus('requesting');
-
-    // 위치 권한 요청 및 초기 위치 트래킹 시작
-    preWatchIdRef.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        const latlng: TLatLng = [pos.coords.latitude, pos.coords.longitude];
-        setCurrentPosition(latlng);
-        setGpsStatus('acquired');
-      },
-      (err) => {
-        console.error(err);
-        setGpsStatus('error');
-      },
-      { enableHighAccuracy: true },
-    );
-
-    // 언마운트 시 watch 제거
-    return () => {
-      if (preWatchIdRef.current !== null) {
-        navigator.geolocation.clearWatch(preWatchIdRef.current);
-      }
-    };
-  }, [setCurrentPosition]);
 
   return (
     <StyledTracker>

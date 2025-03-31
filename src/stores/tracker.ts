@@ -1,4 +1,4 @@
-import { TLatLng, TTrackingStatus } from '@/types/tracker';
+import { TGpsStatus, TLatLng, TTrackingStatus } from '@/types/tracker';
 import { Dispatch, SetStateAction } from 'react';
 import { create } from 'zustand';
 
@@ -17,6 +17,8 @@ interface ITrackerStore {
   setSegments: Setter<TLatLng[][]>;
   currentPosition: TLatLng | null;
   setCurrentPosition: Setter<TLatLng | null>;
+  gpsStatus: TGpsStatus;
+  setGpsStatus: Setter<TGpsStatus>;
 }
 
 // 공통 setter 생성기
@@ -47,5 +49,7 @@ export const useTrackerStore = create<ITrackerStore>((_set) => {
     setSegments: createSetter<TLatLng[][]>('segments'),
     currentPosition: null,
     setCurrentPosition: createSetter<TLatLng | null>('currentPosition'),
+    gpsStatus: 'idle',
+    setGpsStatus: createSetter<TGpsStatus>('gpsStatus'),
   };
 });
