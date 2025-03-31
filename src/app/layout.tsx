@@ -1,4 +1,3 @@
-import ImagePreloader from '@/components/common/ImagePreloader';
 import StyledComponentsRegistry from '@/components/config/registry';
 import AuthSession from '@/components/config/Session';
 import ClientLayout from '@/components/template/ClientLayout';
@@ -16,10 +15,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="preload" href="/images/icons/play.svg" as="image" />
+        <link rel="preload" href="/images/icons/lock.svg" as="image" />
+        <link rel="preload" href="/images/icons/unlock.svg" as="image" />
+        <link rel="preload" href="/images/icons/pause.svg" as="image" />
+        <link rel="preload" href="/images/icons/stop.svg" as="image" />
+      </head>
       <body>
         <AuthSession>
           <StyledComponentsRegistry>
-            <ImagePreloader />
             <ClientLayout>{children}</ClientLayout>
           </StyledComponentsRegistry>
         </AuthSession>
