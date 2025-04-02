@@ -11,10 +11,7 @@ export default function RootPage() {
           className="btn-signin"
           type="button"
           onClick={() =>
-            // signIn('google', { callbackUrl: `runstera://callback` })
-            signIn('google', {
-              callbackUrl: `/signin/mobile-bridge-final?callbackUrl=runstera://callback`,
-            })
+            signIn('google', { callbackUrl: `/signin/mobile-bridge-final` })
           }
         >
           Sign inwith Google
@@ -25,18 +22,12 @@ export default function RootPage() {
 }
 
 const StyledRootPage = styled.div`
-  position: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
   .button-area {
-    position: absolute;
-    right: 0;
-    bottom: 24%;
-    left: 0;
-    display: flex;
-    justify-content: center;
     button {
       display: flex;
       align-items: center;
