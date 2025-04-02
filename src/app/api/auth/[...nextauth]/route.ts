@@ -1,4 +1,3 @@
-import { parseJwt } from '@/utils/parseJwt';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -15,19 +14,37 @@ const authOptions: NextAuthOptions = {
         token: { label: 'Token', type: 'text' },
       },
       async authorize(credentials) {
-        const token = credentials?.token;
+        const accessToken = credentials?.token;
 
         // 👉 JWT 검증 (선택)
-        if (!token) return null;
+        if (!accessToken) return null;
 
-        // 예: JWT에서 사용자 정보 추출
-        const decoded = parseJwt(token); // decode only (또는 jwt.verify 등)
-        return {
-          id: decoded.sub,
-          name: decoded.name,
-          email: decoded.email,
-          accessToken: token,
-        };
+        try {
+          const res = await fetch(
+            'https://www.googleapis.com/oauth2/v3/userinfo',
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            },
+          );
+
+          if (!res.ok) throw new Error('Failed to fetch user info');
+
+          const userInfo = await res.json();
+
+          // ✅ 세션에 저장될 사용자 정보
+          return {
+            id: userInfo.sub,
+            name: userInfo.name,
+            email: userInfo.email,
+            image: userInfo.picture,
+            accessToken,
+          };
+        } catch (err) {
+          console.error('Token auth failed:', err);
+          return null;
+        }
       },
     }),
   ],
