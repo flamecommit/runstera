@@ -21,7 +21,7 @@ function TokenLoginHandler() {
   return null;
 }
 
-export function isWebView(): boolean {
+function isWebView(): boolean {
   if (typeof window === 'undefined') return false;
   const ua = navigator.userAgent || '';
   return (
