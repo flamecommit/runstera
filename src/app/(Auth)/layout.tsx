@@ -1,6 +1,7 @@
 'use client';
 
 import BaseTemplate from '@/components/template/BaseTemplate';
+import UserStatus from '@/components/test/UserStatus';
 import { useTrackerStore } from '@/stores/tracker';
 import { useUserStore } from '@/stores/user';
 import { TLatLng } from '@/types/tracker';
@@ -78,5 +79,10 @@ export default function BottomNavigationLayout({
     };
   }, [setCurrentPosition, setGpsStatus]);
 
-  return <BaseTemplate>{children}</BaseTemplate>;
+  return (
+    <BaseTemplate>
+      <UserStatus />
+      {children}
+    </BaseTemplate>
+  );
 }
