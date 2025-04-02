@@ -8,14 +8,6 @@ const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
   ],
-  callbacks: {
-    async redirect({ url, baseUrl }) {
-      if (url.startsWith('runstera://')) {
-        return `${url}?token=123.123.123`;
-      }
-      return baseUrl;
-    },
-  },
 };
 
 const handler = NextAuth(authOptions);

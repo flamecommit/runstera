@@ -11,7 +11,10 @@ export default function RootPage() {
           className="btn-signin"
           type="button"
           onClick={() =>
-            signIn('google', { callbackUrl: `runstera://callback` })
+            // signIn('google', { callbackUrl: `runstera://callback` })
+            signIn('google', {
+              callbackUrl: `/signin/mobile-bridge-final?callbackUrl=runstera://callback`,
+            })
           }
         >
           Sign inwith Google
