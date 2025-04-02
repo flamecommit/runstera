@@ -1,22 +1,26 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 export default function RootPage() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+
+  useEffect(() => {
+    if (token) {
+      signIn('credentials', {
+        token,
+        callbackUrl: '/tracker', // 로그인 후 이동할 주소
+      });
+    }
+  }, [token]);
+
   return (
     <StyledRootPage>
       <div className="app-name">Runstera</div>
-      {/* <div className="button-area">
-        <button
-          className="btn-signin"
-          type="button"
-          onClick={() =>
-            signIn('google', { callbackUrl: `runstera://callback` })
-          }
-        >
-          Sign inwith Google
-        </button>
-      </div> */}
     </StyledRootPage>
   );
 }
@@ -39,36 +43,5 @@ const StyledRootPage = styled.div`
     text-align: center;
     color: #fff;
     text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-  }
-  .button-area {
-    position: absolute;
-    right: 0;
-    bottom: 24%;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    button {
-      display: flex;
-      align-items: center;
-      padding: 12px 24px;
-      width: 240px;
-      column-gap: 12px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      background-color: #fff;
-      font-weight: 500;
-      font-size: 16px;
-      &:before {
-        display: block;
-        content: '';
-        width: 20px;
-        height: 20px;
-        background-image: url(/images/icons/google.svg);
-        background-size: 100%;
-      }
-      &:hover {
-        background-color: #f7f7f7;
-      }
-    }
   }
 `;
