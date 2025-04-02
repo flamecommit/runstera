@@ -14,7 +14,7 @@ export default function RootPage() {
             signIn('google', { callbackUrl: `/signin/mobile-bridge-final` })
           }
         >
-          Sign inwith Google
+          Sign in with Google
         </button>
       </div>
     </StyledRootPage>
