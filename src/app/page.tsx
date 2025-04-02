@@ -18,7 +18,7 @@ function TokenLoginHandler() {
     }
   }, [token]);
 
-  return <div>{token}</div>;
+  return null;
 }
 
 export default function RootPage() {
