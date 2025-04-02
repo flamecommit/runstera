@@ -2,9 +2,9 @@
 
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
-export default function AuthBridgePage() {
+function AuthBridge() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -12,10 +12,18 @@ export default function AuthBridgePage() {
     if (token) {
       signIn('credentials', {
         token,
-        callbackUrl: '/auth/check', // 로그인 후 이동할 경로
+        callbackUrl: '/auth/check',
       });
     }
   }, [token]);
 
-  return <></>;
+  return <div>Redirecting...</div>;
+}
+
+export default function AuthBridgePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthBridge />
+    </Suspense>
+  );
 }
