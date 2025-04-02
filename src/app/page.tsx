@@ -58,7 +58,7 @@ export default function RootPage() {
           <button
             className="btn-signin"
             type="button"
-            onClick={() => signIn('google', { callbackUrl: `/` })}
+            onClick={() => signIn('google', { callbackUrl: `/auth/check` })}
           >
             Sign in with Google
           </button>

@@ -3,25 +3,23 @@
 import { signIn } from 'next-auth/react';
 import styled from 'styled-components';
 
-export default function RootPage() {
+export default function AuthSigninPage() {
   return (
-    <StyledRootPage>
+    <StyledAuthSigninPage>
       <div className="button-area">
         <button
           className="btn-signin"
           type="button"
-          onClick={() =>
-            signIn('google', { callbackUrl: `/signin/mobile-bridge-final` })
-          }
+          onClick={() => signIn('google', { callbackUrl: `/auth/callback` })}
         >
           Sign in with Google
         </button>
       </div>
-    </StyledRootPage>
+    </StyledAuthSigninPage>
   );
 }
 
-const StyledRootPage = styled.div`
+const StyledAuthSigninPage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,14 +1,21 @@
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+'use client';
 
-export default async function MobileBridgeFinal() {
-  const headersList = await headers(); // ❌ 타입은 Promise<ReadonlyHeaders>
-  const accessToken = headersList.get('x-access-token'); // ❌ 에러: get 속성이 없음
+import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
-  if (!accessToken) {
-    return <div>empty token in cookieStore</div>;
-  }
+export default function AuthBridgePage() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
-  const jwt = accessToken || 'mock.token.value'; // 실제 토큰 추출
-  return redirect(`runstera://callback?token=${jwt}`);
+  useEffect(() => {
+    if (token) {
+      signIn('credentials', {
+        token,
+        callbackUrl: '/auth/check', // 로그인 후 이동할 경로
+      });
+    }
+  }, [token]);
+
+  return <></>;
 }
