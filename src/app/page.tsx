@@ -2,10 +2,10 @@
 
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import styled from 'styled-components';
 
-export default function RootPage() {
+function TokenLoginHandler() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -13,14 +13,21 @@ export default function RootPage() {
     if (token) {
       signIn('credentials', {
         token,
-        callbackUrl: '/tracker', // 로그인 후 이동할 주소
+        callbackUrl: '/', // 로그인 후 이동할 경로
       });
     }
   }, [token]);
 
+  return null;
+}
+
+export default function RootPage() {
   return (
     <StyledRootPage>
       <div className="app-name">Runstera</div>
+      <Suspense fallback={null}>
+        <TokenLoginHandler />
+      </Suspense>
     </StyledRootPage>
   );
 }
