@@ -43,7 +43,17 @@ export default function RootPage() {
       <Suspense fallback={null}>
         <TokenLoginHandler />
       </Suspense>
-      {!isInWebView && (
+      {isInWebView ? (
+        <div className="button-area">
+          <a
+            href="https://www.runstera.com/auth/signin"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Sign in
+          </a>
+        </div>
+      ) : (
         <div className="button-area">
           <button
             className="btn-signin"
@@ -84,6 +94,7 @@ const StyledRootPage = styled.div`
     left: 0;
     display: flex;
     justify-content: center;
+    a,
     button {
       display: flex;
       align-items: center;
