@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 
 export default function RunsPage() {
+  const { initialized } = useRunStore();
   const { data: userStore } = useUserStore();
   const {
     data: runStore,
@@ -20,10 +21,10 @@ export default function RunsPage() {
   } = useRunStore();
 
   useEffect(() => {
-    if (runStore.length === 0 && userStore !== null) {
+    if (!initialized && userStore !== null) {
       fetchRuns(userStore?.uuid);
     }
-  }, [fetchRuns, runStore.length, userStore, userStore?.uuid]);
+  }, [fetchRuns, initialized, userStore, userStore?.uuid]);
 
   return (
     <StyledRunsPage>
