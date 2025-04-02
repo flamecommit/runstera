@@ -15,7 +15,7 @@ export default function MypagePage() {
 
   const handleSignout = () => {
     setUser(null);
-    signOut();
+    signOut({ callbackUrl: '/' });
   };
 
   const handleWithdrawal = async () => {
