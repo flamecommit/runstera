@@ -25,6 +25,7 @@ function isWebView(): boolean {
   if (typeof window === 'undefined') return false;
   const ua = navigator.userAgent || '';
   return (
+    /Runstera/i.test(ua) ||
     /WebView|wv/.test(ua) ||
     /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua)
   );
