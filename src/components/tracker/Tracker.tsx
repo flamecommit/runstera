@@ -32,21 +32,21 @@ const MapCenterSetter = ({ center }: { center: TLatLng }) => {
 };
 
 const RunningMarker = ({
-  lastSegmentsPosition,
-  currentPosition,
-  initialPosition,
+  lastSegmentsLatLng,
+  currentLatLng,
+  initialLatLng,
   status,
 }: {
-  lastSegmentsPosition?: TLatLng | null;
-  currentPosition: TLatLng | null;
-  initialPosition: TLatLng;
+  lastSegmentsLatLng?: TLatLng | null;
+  currentLatLng: TLatLng | null;
+  initialLatLng: TLatLng;
   status: TTrackingStatus;
 }) => {
   const map = useMap();
   const position = (
     ['idle', 'paused'].includes(status)
-      ? currentPosition || initialPosition
-      : lastSegmentsPosition
+      ? currentLatLng || initialLatLng
+      : lastSegmentsLatLng || currentLatLng
   ) as TLatLng;
 
   useEffect(() => {
@@ -87,78 +87,84 @@ export default function Tracker() {
     (sum, segment) => sum + getTotalDistance(segment),
     0,
   );
-  const watchIdRef = useRef<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const lastPositionRef = useRef<TLatLng | null>(null);
-  const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
-  const initialPosition: TLatLng = [37.5665, 126.978];
+  const lastLatLngRef = useRef<TLatLng | null>(null);
+  // const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
+  const initialLatLng: TLatLng = [37.5665, 126.978];
+  const currentLatLng: TLatLng | null = currentPosition
+    ? [currentPosition.coords.latitude, currentPosition.coords.longitude]
+    : null;
 
-  const handleWatchPosition = (pos: GeolocationPosition) => {
-    // 최초 1회만 실행, 타이머 실행
-    if (!hasStartedTracking.current) {
-      hasStartedTracking.current = true;
+  // const handleWatchPosition = (pos: GeolocationPosition) => {
+  //   // 최초 1회만 실행, 타이머 실행
+  //   if (!hasStartedTracking.current) {
+  //     hasStartedTracking.current = true;
 
-      intervalRef.current = setInterval(() => {
-        setDuration((prev) => prev + 1);
-      }, 1000);
-    }
+  //     intervalRef.current = setInterval(() => {
+  //       setDuration((prev) => prev + 1);
+  //     }, 1000);
+  //   }
 
-    const { latitude, longitude, accuracy } = pos.coords;
+  //   const { latitude, longitude, accuracy } = pos.coords;
 
-    if (accuracy > MAX_ACCURACY) return;
+  //   if (accuracy > MAX_ACCURACY) return;
 
-    const latlng: TLatLng = [latitude, longitude];
+  //   const latlng: TLatLng = [latitude, longitude];
 
-    // 최초 좌표는 저장하지 않음
-    if (!lastPositionRef.current) {
-      lastPositionRef.current = latlng;
-      return;
-    }
+  //   // 최초 좌표는 저장하지 않음
+  //   if (!lastLatLngRef.current) {
+  //     lastLatLngRef.current = latlng;
+  //     return;
+  //   }
 
-    // 누적 이동 거리 필터
-    const moved = getDistanceFromLatLonInMeters(
-      ...lastPositionRef.current,
-      ...latlng,
-    );
+  //   // 누적 이동 거리 필터
+  //   const moved = getDistanceFromLatLonInMeters(
+  //     ...lastLatLngRef.current,
+  //     ...latlng,
+  //   );
 
-    if (moved < MIN_MOVE_DISTANCE) return;
+  //   if (moved < MIN_MOVE_DISTANCE) return;
 
-    lastPositionRef.current = latlng;
+  //   lastLatLngRef.current = latlng;
 
-    // 위치 저장
-    setSegments((prev) => {
-      const updated = [...prev];
-      updated[updated.length - 1] = [...updated[updated.length - 1], latlng];
-      return updated;
-    });
-  };
+  //   // 위치 저장
+  //   setSegments((prev) => {
+  //     const updated = [...prev];
+  //     updated[updated.length - 1] = [...updated[updated.length - 1], latlng];
+  //     return updated;
+  //   });
+  // };
 
   // 트래킹 시작
   const startTracking = () => {
     setIsLock(true);
     setStartedAt(new Date());
 
+    intervalRef.current = setInterval(() => {
+      setDuration((prev) => prev + 1);
+    }, 1000);
+
     // 초기 좌표를 위치 배열에 저장
-    setSegments([[currentPosition as TLatLng]]);
+    // setSegments([[currentPosition as TLatLng]]);
 
-    hasStartedTracking.current = false;
+    // hasStartedTracking.current = false;
 
-    const id = navigator.geolocation.watchPosition(
-      handleWatchPosition,
-      (err) => console.error(err),
-      { enableHighAccuracy: true },
-    );
+    // const id = navigator.geolocation.watchPosition(
+    //   handleWatchPosition,
+    //   (err) => console.error(err),
+    //   { enableHighAccuracy: true },
+    // );
 
-    watchIdRef.current = id;
+    // watchIdRef.current = id;
     setTrackingStatus('running');
   };
 
   // 트래킹 일시정지
   const pauseTracking = () => {
-    if (watchIdRef.current) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
-      watchIdRef.current = null;
-    }
+    // if (watchIdRef.current) {
+    //   navigator.geolocation.clearWatch(watchIdRef.current);
+    //   watchIdRef.current = null;
+    // }
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -168,41 +174,74 @@ export default function Tracker() {
 
   // 트래킹 재시작
   const resumeTracking = async () => {
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      handleWatchPosition,
-      (err) => console.error(err),
-      { enableHighAccuracy: true },
-    );
+    // watchIdRef.current = navigator.geolocation.watchPosition(
+    //   handleWatchPosition,
+    //   (err) => console.error(err),
+    //   { enableHighAccuracy: true },
+    // );
     intervalRef.current = setInterval(() => {
       setDuration((prev) => prev + 1);
     }, 1000);
-    setSegments((prev) => [...prev, [currentPosition as TLatLng]]);
+    // setSegments((prev) => [...prev, [currentPosition as TLatLng]]);
     setIsLock(true);
     setTrackingStatus('running');
   };
 
   // 트래킹 종료
   const stopTracking = () => {
-    if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
-      watchIdRef.current = null;
-    }
+    // if (watchIdRef.current !== null) {
+    //   navigator.geolocation.clearWatch(watchIdRef.current);
+    //   watchIdRef.current = null;
+    // }
     setEndedAt(new Date());
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
-      lastPositionRef.current = null;
+      lastLatLngRef.current = null;
       intervalRef.current = null;
     }
     setTrackingStatus('finished');
   };
 
-  const lastSegmentsPosition = allPositions.at(-1) || null;
+  const lastSegmentsLatLng = allPositions.at(-1) || null;
+
+  useEffect(() => {
+    if (trackingStatus === 'running' && currentPosition !== null) {
+      const { latitude, longitude, accuracy } = currentPosition.coords;
+
+      if (accuracy > MAX_ACCURACY) return;
+
+      const latlng: TLatLng = [latitude, longitude];
+
+      // 최초 좌표는 저장하지 않음
+      if (!lastLatLngRef.current) {
+        lastLatLngRef.current = latlng;
+        return;
+      }
+
+      // 누적 이동 거리 계산
+      const moved = getDistanceFromLatLonInMeters(
+        ...lastLatLngRef.current,
+        ...latlng,
+      );
+
+      // 최소 누적 이동 거리 필터
+      if (moved < MIN_MOVE_DISTANCE) return;
+
+      lastLatLngRef.current = latlng;
+
+      setSegments((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = [...updated[updated.length - 1], latlng];
+        return updated;
+      });
+    }
+  }, [currentPosition, segments, setSegments, trackingStatus]);
 
   return (
     <StyledTracker>
       <MapContainer
-        center={initialPosition}
+        center={initialLatLng}
         zoom={16}
         style={{ height: '100%' }}
         zoomControl={false} // + / - 버튼 제거
@@ -211,12 +250,12 @@ export default function Tracker() {
         doubleClickZoom={false} // 🛑 더블클릭 확대 막기
         keyboard={false} // 🛑 키보드 제어 막기
       >
-        {currentPosition && <MapCenterSetter center={currentPosition} />}
+        {currentLatLng !== null && <MapCenterSetter center={currentLatLng} />}
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
         <RunningMarker
-          lastSegmentsPosition={lastSegmentsPosition}
-          currentPosition={currentPosition}
-          initialPosition={initialPosition}
+          lastSegmentsLatLng={lastSegmentsLatLng}
+          currentLatLng={currentLatLng}
+          initialLatLng={initialLatLng}
           status={trackingStatus}
         />
         {segments.map((segment, i) =>

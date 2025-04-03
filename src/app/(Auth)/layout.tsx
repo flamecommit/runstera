@@ -3,7 +3,6 @@
 import BaseTemplate from '@/components/template/BaseTemplate';
 import { useTrackerStore } from '@/stores/tracker';
 import { useUserStore } from '@/stores/user';
-import { TLatLng } from '@/types/tracker';
 import { IUser } from '@/types/user';
 import request from '@/utils/request';
 import { signOut, useSession } from 'next-auth/react';
@@ -62,8 +61,9 @@ export default function BottomNavigationLayout({
     // 위치 권한 요청 및 초기 위치 트래킹 시작
     preWatchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
-        const latlng: TLatLng = [pos.coords.latitude, pos.coords.longitude];
-        setCurrentPosition(latlng);
+        // const latlng: TLatLng = [pos.coords.latitude, pos.coords.longitude];
+        // setCurrentPosition(latlng);
+        setCurrentPosition(pos);
         setGpsStatus('acquired');
       },
       (err) => {

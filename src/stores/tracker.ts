@@ -15,8 +15,8 @@ interface ITrackerStore {
   setDuration: Setter<number>;
   segments: TLatLng[][];
   setSegments: Setter<TLatLng[][]>;
-  currentPosition: TLatLng | null;
-  setCurrentPosition: Setter<TLatLng | null>;
+  currentPosition: GeolocationPosition | null;
+  setCurrentPosition: Setter<GeolocationPosition | null>;
   gpsStatus: TGpsStatus;
   setGpsStatus: Setter<TGpsStatus>;
 }
@@ -48,7 +48,9 @@ export const useTrackerStore = create<ITrackerStore>((_set) => {
     segments: [],
     setSegments: createSetter<TLatLng[][]>('segments'),
     currentPosition: null,
-    setCurrentPosition: createSetter<TLatLng | null>('currentPosition'),
+    setCurrentPosition: createSetter<GeolocationPosition | null>(
+      'currentPosition',
+    ),
     gpsStatus: 'idle',
     setGpsStatus: createSetter<TGpsStatus>('gpsStatus'),
   };
