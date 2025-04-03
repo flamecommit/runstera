@@ -1,5 +1,6 @@
 'use client';
 
+import { color } from '@/styles/variable';
 import { signIn } from 'next-auth/react';
 import styled from 'styled-components';
 
@@ -25,6 +26,7 @@ const StyledAuthSigninPage = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
+  background-color: ${color.primary};
   .button-area {
     button {
       display: flex;
