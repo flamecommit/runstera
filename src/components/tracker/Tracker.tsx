@@ -260,7 +260,6 @@ export default function Tracker() {
             <TrackerButton
               color="black"
               className="stop"
-              longPressDuration={1000}
               onClick={stopTracking}
             >
               종료
