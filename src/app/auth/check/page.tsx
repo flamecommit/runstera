@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingComment from '@/components/common/LoadingComment';
 import { useUserStore } from '@/stores/user';
 import { IUser } from '@/types/user';
 import request from '@/utils/request';
@@ -9,7 +10,7 @@ import { useEffect } from 'react';
 
 // session에 user정보 저장된 상태
 export default function AuthCheckPage() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const { setData: setUser } = useUserStore();
   const router = useRouter();
 
@@ -42,7 +43,5 @@ export default function AuthCheckPage() {
     checkUserEmail();
   }, [router, session?.user, setUser]);
 
-  if (status !== 'authenticated') return <div>Auth Error</div>;
-
-  return <div>Auth Checking...</div>;
+  return <LoadingComment>출발선 어딨는지 찾는 중</LoadingComment>;
 }

@@ -1,15 +1,17 @@
 'use client';
 
+import LoadingComment from '@/components/common/LoadingComment';
 import { useUserStore } from '@/stores/user';
 import { IUser } from '@/types/user';
 import request from '@/utils/request';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import styled from 'styled-components';
 
 export default function AuthSignupPage() {
   const { data: session, status } = useSession();
   const { setData: setUser } = useUserStore();
+  const router = useRouter();
 
   // 신규 회원 등록
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function AuthSignupPage() {
 
           if (code === 200) {
             setUser(data);
+            router.push('/tracker');
           }
         } catch (error) {
           console.log('error', error);
@@ -36,9 +39,7 @@ export default function AuthSignupPage() {
 
       handleUserRegist();
     }
-  }, [session, status, setUser]);
+  }, [session, status, setUser, router]);
 
-  return <StyledAuthSignupPage>Signup...</StyledAuthSignupPage>;
+  return <LoadingComment>단백질바 한 입 먹는 중</LoadingComment>;
 }
-
-const StyledAuthSignupPage = styled.div``;
