@@ -50,6 +50,7 @@ export default function RootPage() {
             href="https://www.runstera.com/auth/signin"
             target="_blank"
             rel="noopener noreferrer"
+            className="external-signin"
           >
             Sign in
           </a>
@@ -57,7 +58,7 @@ export default function RootPage() {
       ) : (
         <div className="button-area">
           <button
-            className="btn-signin"
+            className="google-signin"
             type="button"
             onClick={() => signIn('google', { callbackUrl: `/auth/check` })}
           >
@@ -107,13 +108,18 @@ const StyledRootPage = styled.div`
       background-color: #fff;
       font-weight: 500;
       font-size: 16px;
-      &:before {
-        display: block;
-        content: '';
-        width: 20px;
-        height: 20px;
-        background-image: url(/images/icons/google.svg);
-        background-size: 100%;
+      &.external-signin {
+        justify-content: center;
+      }
+      &.google-signin {
+        &:before {
+          display: block;
+          content: '';
+          width: 20px;
+          height: 20px;
+          background-image: url(/images/icons/google.svg);
+          background-size: 100%;
+        }
       }
       &:hover {
         background-color: #f7f7f7;
