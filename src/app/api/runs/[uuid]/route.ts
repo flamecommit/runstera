@@ -1,13 +1,7 @@
-import {
-  getGoogleSheets,
-  SPREADSHEET_ID,
-  TDatabaseValue,
-} from '@/app/api/utils';
 import { RUN_TABLE } from '@/constants/table';
+import { supabase } from '@/lib/supabase';
 import { ResponseError, ResponseSuccess } from '@/utils/response';
 import { NextRequest } from 'next/server';
-
-const RANGE = `${RUN_TABLE}!A:Z`;
 
 type IParams = Promise<{
   uuid: string;
@@ -28,50 +22,32 @@ export async function GET(
       return ResponseError(50104);
     }
 
-    const sheets = await getGoogleSheets();
+    const { data, error } = await supabase
+      .from('runs')
+      .select('*')
+      .eq('uuid', uuid)
+      .single();
 
-    // Google Sheets API 호출
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: RANGE,
-    });
-
-    // 데이터 반환
-    const rows = response.data.values;
-    if (!rows || rows.length === 0) {
-      throw new Error();
+    if (error || !data) {
+      console.error('GET run error:', error);
+      return ResponseError(59999);
     }
 
-    const headers = rows[0];
+    // ✅ route 필드 safe-parsing
+    let parsedRoute: unknown[] = [];
+    try {
+      parsedRoute =
+        typeof data.route === 'string'
+          ? JSON.parse(data.route)
+          : data.route ?? [];
+    } catch {
+      parsedRoute = [];
+    }
 
-    const jsonData: Record<string, TDatabaseValue>[] = rows
-      .slice(1)
-      .map((row: string[]) => {
-        const obj: Record<string, TDatabaseValue> = {};
-        headers.forEach((header: string, index: number) => {
-          let value: TDatabaseValue = row[index] || '';
-
-          if (header === 'distance' || header === 'duration') {
-            value = Number(row[index]);
-          }
-
-          if (header === 'route') {
-            try {
-              value = JSON.parse(row[index] || '[]');
-            } catch {
-              value = [];
-            }
-          }
-
-          obj[header] = value;
-        });
-        return obj;
-      });
-
-    // user_uuid 일치하는 데이터만 필터링
-    const filtered = jsonData.filter((item) => item.uuid === uuid);
-
-    return ResponseSuccess(filtered[0]);
+    return ResponseSuccess({
+      ...data,
+      route: parsedRoute,
+    });
   } catch {
     return ResponseError(59999);
   }
@@ -91,66 +67,12 @@ export async function DELETE(
       return ResponseError(50104);
     }
 
-    const sheets = await getGoogleSheets();
+    const { error } = await supabase.from(RUN_TABLE).delete().eq('uuid', uuid);
 
-    // 1. 전체 데이터 가져오기
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: RANGE,
-    });
-
-    const rows = response.data.values;
-    if (!rows || rows.length === 0) {
-      return ResponseError(50001); // 데이터 없음
+    if (error) {
+      console.error('DELETE run error:', error);
+      return ResponseError(59999);
     }
-
-    const headers = rows[0];
-
-    // 2. uuid 컬럼의 인덱스 찾기
-    const uuidIndex = headers.indexOf('uuid');
-    if (uuidIndex === -1) {
-      return ResponseError(50002); // uuid 컬럼 없음
-    }
-
-    const dataRowIndex = rows.findIndex((row) => row[uuidIndex] === uuid);
-
-    console.log('dataRowIndex', dataRowIndex);
-
-    if (dataRowIndex === -1) {
-      return ResponseError(50003); // 해당 uuid 없음
-    }
-
-    const sheetInfo = await sheets.spreadsheets.get({
-      spreadsheetId: SPREADSHEET_ID,
-    });
-    const sheet = sheetInfo.data.sheets?.find(
-      (s) => s.properties?.title === RUN_TABLE,
-    );
-
-    if (!sheet || sheet.properties?.sheetId === undefined) {
-      return ResponseError(50101); // 시트 ID를 찾을 수 없음
-    }
-
-    const sheetId = sheet.properties.sheetId; // 시트 ID 가져오기
-
-    // 5. 삭제 요청 (행 삭제)
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: SPREADSHEET_ID,
-      requestBody: {
-        requests: [
-          {
-            deleteDimension: {
-              range: {
-                sheetId, // 기본값. 정확한 sheetId가 필요하면 별도 조회 필요
-                dimension: 'ROWS',
-                startIndex: dataRowIndex,
-                endIndex: dataRowIndex + 1,
-              },
-            },
-          },
-        ],
-      },
-    });
 
     return ResponseSuccess({ deleted: true });
   } catch (e) {
@@ -176,50 +98,20 @@ export async function PUT(
     const body = await req.json();
     const { title } = body;
     if (typeof title !== 'string' || title.trim() === '') {
-      return ResponseError(50105); // 유효하지 않은 title
+      return ResponseError(50105);
     }
 
-    const sheets = await getGoogleSheets();
+    const now = new Date().toISOString();
 
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: RANGE,
-    });
+    const { error } = await supabase
+      .from('runs')
+      .update({ title, updated_at: now })
+      .eq('uuid', uuid);
 
-    const rows = response.data.values;
-    if (!rows || rows.length <= 1) {
-      return ResponseError(50001); // 데이터 없음
+    if (error) {
+      console.error('PUT run update error:', error);
+      return ResponseError(59999);
     }
-
-    const headers = rows[0];
-    const uuidIndex = headers.indexOf('uuid');
-    const titleIndex = headers.indexOf('title');
-
-    if (uuidIndex === -1 || titleIndex === -1) {
-      return ResponseError(50002); // 필요한 컬럼 없음
-    }
-
-    const dataRows = rows.slice(1);
-    const dataRowIndex = dataRows.findIndex((row) => row[uuidIndex] === uuid);
-
-    if (dataRowIndex === -1) {
-      return ResponseError(50003); // 해당 uuid 없음
-    }
-
-    const sheetRowIndex = dataRowIndex + 1; // 헤더 보정
-
-    const targetCell = `${String.fromCharCode(65 + titleIndex)}${
-      sheetRowIndex + 1
-    }`; // 예: 'C5'
-
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${RUN_TABLE}!${targetCell}`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[title]],
-      },
-    });
 
     return ResponseSuccess({ updated: true });
   } catch (e) {

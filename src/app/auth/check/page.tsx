@@ -23,8 +23,10 @@ export default function AuthCheckPage() {
       try {
         const { data, code } = await request<IUser | null>({
           method: 'GET',
-          url: '/api/auth/check',
-          searchParams: { email },
+          url: `/api/user`,
+          searchParams: {
+            email,
+          },
         });
 
         if (code === 200) {

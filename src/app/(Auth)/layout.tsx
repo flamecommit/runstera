@@ -28,7 +28,7 @@ export default function BottomNavigationLayout({
         try {
           const { data, code } = await request<IUser | null>({
             method: 'GET',
-            url: '/api/auth/check',
+            url: '/api/user',
             searchParams: { email },
           });
 
