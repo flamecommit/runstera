@@ -62,34 +62,6 @@ export async function POST(req: Request) {
 
     const sheets = await getGoogleSheets();
 
-    // 1. 기존 데이터 불러오기 (email 중복 체크용)
-    const getResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: RANGE,
-    });
-
-    const rows = getResponse.data.values || [];
-    const headers = rows[0] || [];
-    const emailIndex = headers.indexOf('email');
-
-    const existing = rows.slice(1).find((row) => row[emailIndex] === email);
-
-    if (existing) {
-      const jsonData: Record<string, TDatabaseValue>[] = [existing].map(
-        (row: string[]) => {
-          const obj: Record<string, TDatabaseValue> = {};
-          headers.forEach((header: string, index: number) => {
-            const value: TDatabaseValue = row[index] || '';
-
-            obj[header] = value;
-          });
-          return obj;
-        },
-      );
-
-      return ResponseSuccess(jsonData[0]);
-    }
-
     // 2. 등록
     const now = new Date().toISOString();
     const uuid = uuidv4();
