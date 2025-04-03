@@ -6,7 +6,7 @@ import { useUserStore } from '@/stores/user';
 import { TLatLng } from '@/types/tracker';
 import { IUser } from '@/types/user';
 import request from '@/utils/request';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 
 export default function BottomNavigationLayout({
@@ -33,6 +33,10 @@ export default function BottomNavigationLayout({
           });
 
           if (code === 200) {
+            if (data === null) {
+              signOut({ callbackUrl: '/' });
+              return;
+            }
             setUser(data);
           }
         } catch (error) {

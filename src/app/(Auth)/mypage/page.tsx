@@ -6,13 +6,11 @@ import { useUserStore } from '@/stores/user';
 import request from '@/utils/request';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 export default function MypagePage() {
   const { data: userStore, setData: setUser } = useUserStore();
   const { setPending } = useGlobalSpinner();
-  const router = useRouter();
 
   const handleSignout = () => {
     setUser(null);
@@ -36,9 +34,8 @@ export default function MypagePage() {
       });
 
       if (code === 200) {
-        await signOut({ redirect: false });
         setUser(null);
-        router.push('/');
+        signOut({ callbackUrl: '/' });
       }
     } catch (error) {
       console.log(error);
