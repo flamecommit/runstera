@@ -50,8 +50,8 @@ const StyledBottomNavigation = styled.nav`
   z-index: 1000;
   transform: translateY(100px);
   transition: transform 500ms;
-  border-top: 1px solid #ddd;
-  background-color: #f7f7f7;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.24);
+  background-color: #fff;
   .center {
     max-width: 768px;
     margin: 0 auto;
@@ -61,7 +61,7 @@ const StyledBottomNavigation = styled.nav`
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 48px;
+      height: 60px;
       width: 100%;
       font-size: 0;
       &:after {

@@ -1,5 +1,6 @@
 'use client';
 
+import Button from '@/components/common/Button';
 import LoadingComment from '@/components/common/LoadingComment';
 import { useGlobalSpinner } from '@/stores/ui';
 import { useUserStore } from '@/stores/user';
@@ -85,7 +86,8 @@ export default function AuthSignupPage() {
             checked={termsAgreed}
             onChange={(e) => setTermsAgreed(e.target.checked)}
           />
-          <div>
+          <div className="label-text">
+            <span className="required">[필수]</span>
             <a
               href="https://www.runstera.com/policy/terms"
               target="_blank"
@@ -102,7 +104,8 @@ export default function AuthSignupPage() {
             checked={privacyAgreed}
             onChange={(e) => setPrivacyAgreed(e.target.checked)}
           />
-          <div>
+          <div className="label-text">
+            <span className="required">[필수]</span>
             <a
               href="https://www.runstera.com/policy/privacy"
               target="_blank"
@@ -119,7 +122,8 @@ export default function AuthSignupPage() {
             checked={locationAgreed}
             onChange={(e) => setLocationAgreed(e.target.checked)}
           />
-          <div>
+          <div className="label-text">
+            <span className="required">[필수]</span>
             <a
               href="https://www.runstera.com/policy/location"
               target="_blank"
@@ -137,19 +141,19 @@ export default function AuthSignupPage() {
               checked={allAgreed}
               onChange={handleAllAgreeChange}
             />
-            <div>모든 약관에 동의합니다.</div>
+            <div className="label-text">모든 약관에 동의합니다.</div>
           </label>
         </div>
       </div>
 
       <div className="btn-area">
-        <button
+        <Button
+          color={isAgreed ? 'black' : 'gray'}
           onClick={handleSubmit}
           disabled={!isAgreed}
-          className="btn-submit"
         >
           동의하고 시작하기
-        </button>
+        </Button>
       </div>
     </StyledAuthSignupPage>
   );
@@ -158,24 +162,33 @@ export default function AuthSignupPage() {
 const StyledAuthSignupPage = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
   padding: 32px;
   max-width: 480px;
   margin: 0 auto;
-  font-size: 14px;
   h2 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
+    margin-bottom: 48px;
   }
   .terms-area {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    input[type='checkbox'] {
+      width: 24px;
+      height: 24px;
+    }
     label {
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    .label-text {
+      font-size: 20px;
+    }
+    .required {
+      margin-right: 4px;
     }
     a {
       text-decoration: underline;
@@ -189,17 +202,6 @@ const StyledAuthSignupPage = styled.div`
   }
   .btn-area {
     text-align: center;
-    .btn-submit {
-      padding: 10px 20px;
-      background-color: #0070f3;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      &:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-    }
+    margin-top: 36px;
   }
 `;

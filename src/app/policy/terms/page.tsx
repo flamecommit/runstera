@@ -11,7 +11,10 @@ export default function PolicyTermsPage() {
       <PolicyContent>
         본 이용약관은 귀하(이하 &quot;이용자&quot;)가 Runstera(이하
         &quot;앱&quot;)를 이용함에 있어 필요한 권리, 의무 및 책임사항 등을
-        규정함을 목적으로 합니다. 제1조 (목적)
+        규정함을 목적으로 합니다.
+        <br />
+        <br />
+        제1조 (목적)
         <br />
         이 약관은 이용자가 Runstera가 제공하는 서비스를 이용함에 있어, 회사와
         이용자 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로
