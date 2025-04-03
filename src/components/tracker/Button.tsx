@@ -23,6 +23,7 @@ const StyledTrackerButton = styled.button`
   border-radius: 50%;
   color: #fff;
   font-size: 0;
+  z-index: 1000;
   &:after {
     display: block;
     content: '';

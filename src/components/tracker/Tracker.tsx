@@ -240,6 +240,8 @@ export default function Tracker() {
         <div className="loading-gps">Loading GPS...</div>
       )}
 
+      {trackingStatus === 'running' && isLock && <div className="lock-layer" />}
+
       <div className="tracker-button-area">
         {/* 시작 전 */}
         {trackingStatus === 'idle' && (
@@ -256,9 +258,12 @@ export default function Tracker() {
         {trackingStatus === 'running' && (
           <>
             <TrackerButton
-              color="black"
+              color={isLock ? 'primary' : 'black'}
               className={isLock ? 'lock' : 'unlock'}
               onClick={() => setIsLock(!isLock)}
+              style={{
+                zIndex: 1002,
+              }}
             >
               {isLock ? '잠금' : '잠금해제'}
             </TrackerButton>
@@ -371,12 +376,17 @@ const StyledTracker = styled.div`
     font-family: ${Roboto};
     font-style: italic;
   }
+  .lock-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
   .tracker-button-area {
     position: absolute;
     bottom: 12%;
     right: 0;
     left: 0;
-    z-index: 1000;
     display: flex;
     justify-content: center;
     gap: 24px;
