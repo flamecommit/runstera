@@ -9,6 +9,7 @@ import { useGlobalSpinner } from '@/stores/ui';
 import { useUserStore } from '@/stores/user';
 import { IRun } from '@/types/runs';
 import request from '@/utils/request';
+import { useDialog } from '@shinyongjun/react-dialog';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
@@ -23,10 +24,11 @@ export default function RunDetailPage({ run }: IProps) {
   const { data: userStore } = useUserStore();
   const { fetch: fetchRuns } = useRunStore();
   const router = useRouter();
+  const { alert, confirm } = useDialog();
 
   // 기록 저장
   const handleRegistRun = useCallback(async () => {
-    if (!confirm('기록을 저장하시겠습니까?')) return;
+    if (!(await confirm('기록을 저장하시겠습니까?'))) return;
 
     setPending(true);
 
@@ -46,15 +48,24 @@ export default function RunDetailPage({ run }: IProps) {
         router.refresh();
       }
     } catch {
-      alert('저장 실패, 다시 시도해주세요.');
+      await alert('저장 실패, 다시 시도해주세요.');
     } finally {
       setPending(false);
     }
-  }, [setPending, run.uuid, title, userStore, router, fetchRuns]);
+  }, [
+    confirm,
+    setPending,
+    run.uuid,
+    title,
+    userStore,
+    router,
+    fetchRuns,
+    alert,
+  ]);
 
   // 기록 삭제
   const handleDeleteRun = useCallback(async () => {
-    if (!confirm('기록을 삭제하시겠습니까?')) return;
+    if (!(await confirm('기록을 삭제하시겠습니까?'))) return;
 
     setPending(true);
 
@@ -71,11 +82,11 @@ export default function RunDetailPage({ run }: IProps) {
         router.push('/runs');
       }
     } catch {
-      alert('삭제 실패, 다시 시도해주세요.');
+      await alert('삭제 실패, 다시 시도해주세요.');
     } finally {
       setPending(false);
     }
-  }, [fetchRuns, router, run.uuid, setPending, userStore]);
+  }, [alert, confirm, fetchRuns, router, run.uuid, setPending, userStore]);
 
   return (
     <>

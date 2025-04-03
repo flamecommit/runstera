@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { Pretendard } from './fonts';
-import { reset } from './variable';
+import { color, reset } from './variable';
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -94,6 +94,28 @@ const GlobalStyle = createGlobalStyle`
     &::-webkit-outer-spin-button,
     ::-webkit-inner-spin-button {
       appearance: none;
+    }
+  }
+  .react-dialog__dialog {
+    width: 320px;
+    border-radius: 4px;
+    .react-dialog__message {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    button {
+      padding: 6px 0;
+      height: auto;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 700;
+      &.react-dialog__button-ok {
+        background-color: ${color.primary};
+      }
+      &.react-dialog__button-cancel {
+        background-color: #000;
+        color: #fff;
+      }
     }
   }
 `;

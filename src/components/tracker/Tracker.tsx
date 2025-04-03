@@ -135,8 +135,6 @@ export default function Tracker() {
 
   // 트래킹 시작
   const startTracking = () => {
-    if (!navigator.geolocation) return alert('GPS를 지원하지 않습니다.');
-
     setIsLock(true);
     setStartedAt(new Date());
 

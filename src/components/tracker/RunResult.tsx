@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/user';
 import { formatDate, getTimeOfDay } from '@/utils/datetime';
 import { getTotalDistance } from '@/utils/distance';
 import request from '@/utils/request';
+import { useDialog } from '@shinyongjun/react-dialog';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
@@ -38,6 +39,7 @@ export default function RunResult() {
     0,
   );
   const router = useRouter();
+  const { alert, confirm } = useDialog();
 
   // 기록 저장
   const handleRegistResult = useCallback(async () => {
@@ -71,11 +73,12 @@ export default function RunResult() {
         router.push('/runs');
       }
     } catch {
-      alert('저장 실패, 다시 시도해주세요.');
+      await alert('저장 실패, 다시 시도해주세요.');
     } finally {
       setPending(false);
     }
   }, [
+    alert,
     distance,
     duration,
     endedAt,
@@ -93,8 +96,8 @@ export default function RunResult() {
     userStore,
   ]);
 
-  const handleDeleteResult = () => {
-    if (!confirm('기록을 삭제하시겠습니까?')) return;
+  const handleDeleteResult = async () => {
+    if (!(await confirm('기록을 삭제하시겠습니까?'))) return;
 
     setTrackingStatus('idle');
     setStartedAt(null);

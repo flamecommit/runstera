@@ -53,7 +53,6 @@ export default function BottomNavigationLayout({
   // GPS 저장
   useEffect(() => {
     if (!navigator.geolocation) {
-      alert('이 브라우저는 GPS를 지원하지 않습니다.');
       setGpsStatus('error');
       return;
     }
