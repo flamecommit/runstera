@@ -22,14 +22,14 @@ export default function BottomNavigationLayout({
   // User 정보 Store에 저장
   useEffect(() => {
     if (status === 'authenticated' && session?.user && user === null) {
-      const { name, email, image } = session.user;
+      const { email } = session.user;
 
       const handleUserRegist = async () => {
         try {
-          const { code, data } = await request<IUser>({
-            method: 'POST',
-            url: '/api/user',
-            body: { name, email, image },
+          const { data, code } = await request<IUser | null>({
+            method: 'GET',
+            url: '/api/auth/check',
+            searchParams: { email },
           });
 
           if (code === 200) {
