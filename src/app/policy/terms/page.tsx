@@ -9,9 +9,6 @@ export default function PolicyTermsPage() {
     <PolicyWrapper>
       <PolicyTitle>이용약관</PolicyTitle>
       <PolicyContent>
-        최종 수정일: 2025년 4월 3일
-        <br />
-        <br />
         본 이용약관은 귀하(이하 &quot;이용자&quot;)가 Runstera(이하
         &quot;앱&quot;)를 이용함에 있어 필요한 권리, 의무 및 책임사항 등을
         규정함을 목적으로 합니다. 제1조 (목적)
@@ -130,6 +127,9 @@ export default function PolicyTermsPage() {
         <br />
         앱 운영자: Runstera 팀<br />
         이메일: [runstera0329@gmail.com]
+        <br />
+        <br />
+        최종 수정일: 2025년 4월 3일
       </PolicyContent>
     </PolicyWrapper>
   );

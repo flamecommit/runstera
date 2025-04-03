@@ -12,5 +12,5 @@ export default function PolicyWrapper({ children }: IProps) {
 }
 
 const StyledPolicyWrapper = styled.div`
-  padding: 24px;
+  padding: 72px 12px 36px;
 `;

@@ -9,9 +9,6 @@ export default function PolicyLocationPage() {
     <PolicyWrapper>
       <PolicyTitle>위치정보 이용 안내</PolicyTitle>
       <PolicyContent>
-        최종 수정일: 2025년 4월 3일
-        <br />
-        <br />
         Runstera(이하 &quot;앱&quot;)는 러닝 경로 기록 및 운동 통계 제공을 위해
         사용자의 위치정보를 수집 및 이용합니다. 본 안내문은 「위치정보의 보호 및
         이용 등에 관한 법률」에 따라 작성되었습니다.
@@ -27,7 +24,6 @@ export default function PolicyLocationPage() {
         <br />
         <br />
         2. 위치정보의 이용 목적
-        <br />
         <br />
         - 사용자의 러닝 경로 저장 및 시각화
         <br />
@@ -76,6 +72,9 @@ export default function PolicyLocationPage() {
         <br />
         앱 운영자: Runstera 팀<br />
         이메일: [runstera0329@gmail.com]
+        <br />
+        <br />
+        최종 수정일: 2025년 4월 3일
       </PolicyContent>
     </PolicyWrapper>
   );

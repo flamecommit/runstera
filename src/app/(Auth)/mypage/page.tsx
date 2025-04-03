@@ -80,20 +80,31 @@ const StyledMypagePage = styled.div`
   padding: 24px;
   .mypage-list {
     display: grid;
-    row-gap: 24px;
     .row {
+      border-bottom: 1px solid #ddd;
       a,
       button {
         display: flex;
         align-items: center;
-        padding: 6px 12px;
+        justify-content: space-between;
+        padding: 6px 0;
         width: 100%;
+        height: 60px;
         text-align: left;
         font-weight: 700;
-        font-size: 16px;
-        border-left: 2px solid #ddd;
+        font-size: 18px;
+        &:after {
+          display: block;
+          content: '';
+          width: 30px;
+          height: 30px;
+          mask-image: url(/images/icons/right.svg);
+          mask-position: center;
+          mask-size: 24px;
+          background-color: #000;
+        }
         &.withdrawal {
-          color: red;
+          color: #999;
         }
       }
     }
