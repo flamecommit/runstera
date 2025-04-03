@@ -89,10 +89,10 @@ const StyledMypagePage = styled.div`
         justify-content: space-between;
         padding: 6px 0;
         width: 100%;
-        height: 60px;
+        height: 48px;
         text-align: left;
         font-weight: 700;
-        font-size: 18px;
+        font-size: 16px;
         &:after {
           display: block;
           content: '';

@@ -60,7 +60,9 @@ export default function RunsPage() {
           })}
         </div>
       ) : (
-        <div className="run-empty">No Data</div>
+        <div className="run-empty">
+          <div className="circle">No Data</div>
+        </div>
       )}
     </StyledRunsPage>
   );
@@ -97,10 +99,14 @@ const StyledRunsPage = styled.div`
     }
   }
   .run-empty {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 160px;
-    background-color: #f7f7f7;
+    .circle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 160px;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.24);
+    }
   }
 `;

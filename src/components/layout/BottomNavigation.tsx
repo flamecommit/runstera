@@ -58,19 +58,18 @@ const StyledBottomNavigation = styled.nav`
     display: flex;
     align-items: center;
     a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 60px;
+      height: 48px;
       width: 100%;
       font-size: 0;
+      position: relative;
       &:after {
         display: block;
         content: '';
-        width: 36px;
-        height: 36px;
+        position: absolute;
+        width: 100%;
+        height: 100%;
         background-color: #000;
-        mask-size: 32px;
+        mask-size: 26px;
         mask-position: center;
       }
       &.dashboard:after {
