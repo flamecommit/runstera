@@ -28,8 +28,6 @@ export default function RunDetailPage({ run }: IProps) {
 
   // 기록 저장
   const handleRegistRun = useCallback(async () => {
-    if (!(await confirm('기록을 저장하시겠습니까?'))) return;
-
     setPending(true);
 
     try {
@@ -52,16 +50,7 @@ export default function RunDetailPage({ run }: IProps) {
     } finally {
       setPending(false);
     }
-  }, [
-    confirm,
-    setPending,
-    run.uuid,
-    title,
-    userStore,
-    router,
-    fetchRuns,
-    alert,
-  ]);
+  }, [setPending, run.uuid, title, userStore, router, fetchRuns, alert]);
 
   // 기록 삭제
   const handleDeleteRun = useCallback(async () => {
