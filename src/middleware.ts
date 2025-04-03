@@ -9,17 +9,17 @@ export default async function middleware(req: NextRequest) {
 
   const response = NextResponse.next();
 
-  const exactPublicPaths = ['/'];
-  const prefixPublicPaths = ['/signin'];
+  // const exactPublicPaths = ['/'];
+  const prefixPublicPaths = ['/auth'];
 
-  const isExactPublic = exactPublicPaths.includes(pathname);
+  // const isExactPublic = exactPublicPaths.includes(pathname);
   const isPrefixPublic = prefixPublicPaths.some((path) =>
     pathname.startsWith(path),
   );
 
-  if (isExactPublic && token) {
-    return NextResponse.redirect(new URL('/tracker', req.url));
-  }
+  // if (isExactPublic && token) {
+  //   return NextResponse.redirect(new URL('/tracker', req.url));
+  // }
 
   if (isPrefixPublic) {
     response.headers.set('x-access-token', token?.accessToken as string);
