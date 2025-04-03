@@ -89,51 +89,10 @@ export default function Tracker() {
   );
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastLatLngRef = useRef<TLatLng | null>(null);
-  // const hasStartedTracking = useRef(false); // 최초 위치 도착 여부
   const initialLatLng: TLatLng = [37.5665, 126.978];
   const currentLatLng: TLatLng | null = currentPosition
     ? [currentPosition.coords.latitude, currentPosition.coords.longitude]
     : null;
-
-  // const handleWatchPosition = (pos: GeolocationPosition) => {
-  //   // 최초 1회만 실행, 타이머 실행
-  //   if (!hasStartedTracking.current) {
-  //     hasStartedTracking.current = true;
-
-  //     intervalRef.current = setInterval(() => {
-  //       setDuration((prev) => prev + 1);
-  //     }, 1000);
-  //   }
-
-  //   const { latitude, longitude, accuracy } = pos.coords;
-
-  //   if (accuracy > MAX_ACCURACY) return;
-
-  //   const latlng: TLatLng = [latitude, longitude];
-
-  //   // 최초 좌표는 저장하지 않음
-  //   if (!lastLatLngRef.current) {
-  //     lastLatLngRef.current = latlng;
-  //     return;
-  //   }
-
-  //   // 누적 이동 거리 필터
-  //   const moved = getDistanceFromLatLonInMeters(
-  //     ...lastLatLngRef.current,
-  //     ...latlng,
-  //   );
-
-  //   if (moved < MIN_MOVE_DISTANCE) return;
-
-  //   lastLatLngRef.current = latlng;
-
-  //   // 위치 저장
-  //   setSegments((prev) => {
-  //     const updated = [...prev];
-  //     updated[updated.length - 1] = [...updated[updated.length - 1], latlng];
-  //     return updated;
-  //   });
-  // };
 
   // 트래킹 시작
   const startTracking = () => {
@@ -144,27 +103,13 @@ export default function Tracker() {
       setDuration((prev) => prev + 1);
     }, 1000);
 
-    // 초기 좌표를 위치 배열에 저장
-    // setSegments([[currentPosition as TLatLng]]);
+    setSegments([[currentLatLng as TLatLng]]);
 
-    // hasStartedTracking.current = false;
-
-    // const id = navigator.geolocation.watchPosition(
-    //   handleWatchPosition,
-    //   (err) => console.error(err),
-    //   { enableHighAccuracy: true },
-    // );
-
-    // watchIdRef.current = id;
     setTrackingStatus('running');
   };
 
   // 트래킹 일시정지
   const pauseTracking = () => {
-    // if (watchIdRef.current) {
-    //   navigator.geolocation.clearWatch(watchIdRef.current);
-    //   watchIdRef.current = null;
-    // }
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -174,25 +119,18 @@ export default function Tracker() {
 
   // 트래킹 재시작
   const resumeTracking = async () => {
-    // watchIdRef.current = navigator.geolocation.watchPosition(
-    //   handleWatchPosition,
-    //   (err) => console.error(err),
-    //   { enableHighAccuracy: true },
-    // );
     intervalRef.current = setInterval(() => {
       setDuration((prev) => prev + 1);
     }, 1000);
-    // setSegments((prev) => [...prev, [currentPosition as TLatLng]]);
+
+    setSegments((prev) => [...prev, [currentLatLng as TLatLng]]);
+
     setIsLock(true);
     setTrackingStatus('running');
   };
 
   // 트래킹 종료
   const stopTracking = () => {
-    // if (watchIdRef.current !== null) {
-    //   navigator.geolocation.clearWatch(watchIdRef.current);
-    //   watchIdRef.current = null;
-    // }
     setEndedAt(new Date());
 
     if (intervalRef.current) {
