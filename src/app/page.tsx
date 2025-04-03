@@ -13,7 +13,7 @@ function TokenLoginHandler() {
     if (token) {
       signIn('credentials', {
         token,
-        callbackUrl: '/tracker', // 로그인 후 이동할 경로
+        callbackUrl: '/auth/check', // 로그인 후 이동할 경로
       });
     }
   }, [token]);

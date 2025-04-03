@@ -5,6 +5,7 @@ import { useGlobalSpinner } from '@/stores/ui';
 import { useUserStore } from '@/stores/user';
 import request from '@/utils/request';
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
@@ -51,6 +52,15 @@ export default function MypagePage() {
       <PageTitle>Mypage</PageTitle>
       <div className="mypage-list">
         <div className="row">
+          <Link href="/policy/terms">이용약관</Link>
+        </div>
+        <div className="row">
+          <Link href="/policy/privacy">개인정보처리방침</Link>
+        </div>
+        <div className="row">
+          <Link href="/policy/location">위치정보 이용 안내</Link>
+        </div>
+        <div className="row">
           <button type="button" onClick={handleSignout}>
             로그아웃
           </button>
@@ -73,15 +83,14 @@ const StyledMypagePage = styled.div`
   padding: 24px;
   .mypage-list {
     display: grid;
-    row-gap: 12px;
+    row-gap: 24px;
     .row {
       a,
       button {
         display: flex;
         align-items: center;
-        padding-inline: 24px;
+        padding: 6px 12px;
         width: 100%;
-        height: 48px;
         text-align: left;
         font-weight: 700;
         font-size: 16px;
