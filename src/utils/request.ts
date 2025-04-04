@@ -1,6 +1,7 @@
 'use server';
 
 import { IncomingMessage, ServerResponse } from 'http';
+import { headers } from 'next/headers';
 import { objectToQueryString } from './object';
 
 type TParams = {
@@ -34,13 +35,9 @@ const fetchData = async <T>({
   options,
 }: IFetchParams): Promise<IResponse<T>> => {
   try {
-    const defaultHeaders = new Headers({
-      accept: 'application/json',
-      'Content-Type': 'application/json',
-    });
-
     const result = await fetch(`${process.env.FETCH_ENTRY}${url}`, {
-      headers: defaultHeaders,
+      headers: await headers(),
+      credentials: 'include',
       ...options,
     });
 

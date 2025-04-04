@@ -1,13 +1,18 @@
 import { RUN_TABLE } from '@/constants/table';
 import { supabase } from '@/lib/supabase';
 import { ResponseError, ResponseSuccess } from '@/utils/response';
+import { NextRequest } from 'next/server';
 
 // Runs 목록 조회
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
     const searchParams = new URLSearchParams(url.search);
     const user_uuid = searchParams.get('user_uuid');
+
+    // const session = await getServerSession(authOptions);
+
+    // console.log('!!!!! session !!!!!!!!', session);
 
     if (!user_uuid) return ResponseError(50104); // 필수 파라미터 없음
 
