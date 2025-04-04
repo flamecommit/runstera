@@ -1,43 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { ResponseError, ResponseSuccess } from '@/utils/response';
+import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
     const { token } = await req.json();
 
     if (!token) {
-      return NextResponse.json({ error: 'Token is required' }, { status: 400 });
+      return ResponseError(50104);
     }
 
-    // Google OAuth id_token 검증
+    // access_token 검증 및 사용자 정보 요청
     const res = await fetch(
-      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`,
+      'https://www.googleapis.com/oauth2/v1/userinfo?alt=json',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     );
+
     if (!res.ok) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+      return ResponseError(50108);
     }
 
-    const googleUser = await res.json();
+    const userInfo = await res.json();
 
-    // 예시로 반환되는 정보
-    // {
-    //   "email": "example@gmail.com",
-    //   "name": "John Doe",
-    //   "picture": "https://...",
-    //   "sub": "Google User ID"
-    // }
-
-    // 사용자 정보를 클라이언트에 전달
-    return NextResponse.json({
-      email: googleUser.email,
-      name: googleUser.name,
-      image: googleUser.picture,
-      googleId: googleUser.sub,
+    // 예: { email, name, picture, id, verified_email: true }
+    return ResponseSuccess({
+      email: userInfo.email,
+      name: userInfo.name,
+      image: userInfo.picture,
+      googleId: userInfo.id,
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 },
-    );
+    return ResponseError(59999);
   }
 }

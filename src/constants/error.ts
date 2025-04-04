@@ -34,6 +34,10 @@ export const ERROR_TYPE: IErrorObject = {
     message: 'Invalid data format',
     alert: '유효하지 않은 데이터 형식',
   },
+  50108: {
+    message: 'Invalid access token',
+    alert: '유효하지 않은 토큰',
+  },
   59999: {
     message: 'Undefined error',
     alert: '정의되지 않은 오류',
