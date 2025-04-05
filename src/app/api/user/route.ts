@@ -57,13 +57,13 @@ export async function POST(req: Request) {
     const user = data?.[0];
 
     const accessToken = jwt.sign(
-      { sub: user.uuid, email },
+      { uuid: user.uuid, email },
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: ACCESS_TOKEN_EXPIRY },
     );
 
     const refreshToken = jwt.sign(
-      { sub: user.uuid },
+      { uuid: user.uuid, email },
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: REFRESH_TOKEN_EXPIRY },
     );

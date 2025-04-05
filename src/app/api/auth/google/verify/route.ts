@@ -28,22 +28,21 @@ export async function POST(req: NextRequest) {
     }
 
     const googleUser = await googleRes.json();
-    const { email, name, image } = googleUser;
 
     // 2. Supabase에서 회원 조회
     const { data: user, error: userError } = await supabase
       .from(USER_TABLE)
       .select('*')
-      .eq('email', email)
+      .eq('email', googleUser.email)
       .single();
 
     if (userError || !user) {
       // 비회원 : token이 비어있음.
       return ResponseSuccess({
         user: {
-          email,
-          name,
-          image,
+          name: googleUser.name,
+          email: googleUser.email,
+          image: googleUser.picture,
         },
         token: {
           accessToken: null,
@@ -54,13 +53,13 @@ export async function POST(req: NextRequest) {
     }
 
     const accessToken = jwt.sign(
-      { sub: user.uuid, email },
+      { uuid: user.uuid, email: googleUser.email },
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: ACCESS_TOKEN_EXPIRY },
     );
 
     const refreshToken = jwt.sign(
-      { sub: user.uuid },
+      { uuid: user.uuid, email: googleUser.email },
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: REFRESH_TOKEN_EXPIRY },
     );
