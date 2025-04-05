@@ -1,11 +1,9 @@
 import { USER_TABLE } from '@/constants/table';
+import { ACCESS_TOKEN_EXPIRY, REFRESH_TOKEN_EXPIRY } from '@/constants/token';
 import { supabase } from '@/lib/supabase';
 import { ResponseError, ResponseSuccess } from '@/utils/response';
 import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
-
-const ACCESS_TOKEN_EXPIRY = '15m';
-const REFRESH_TOKEN_EXPIRY = '7d';
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,6 +38,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (userError || !user) {
+      // 비회원 : token이 비어있음.
       return ResponseSuccess({
         user: {
           email,

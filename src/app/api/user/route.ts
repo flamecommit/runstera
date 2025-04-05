@@ -1,6 +1,8 @@
 import { USER_TABLE } from '@/constants/table';
+import { ACCESS_TOKEN_EXPIRY, REFRESH_TOKEN_EXPIRY } from '@/constants/token';
 import { supabase } from '@/lib/supabase';
 import { ResponseError, ResponseSuccess } from '@/utils/response';
+import jwt from 'jsonwebtoken';
 
 export async function GET(req: Request) {
   try {
@@ -52,7 +54,32 @@ export async function POST(req: Request) {
       return ResponseError(59999);
     }
 
-    return ResponseSuccess(data?.[0]);
+    const user = data?.[0];
+
+    const accessToken = jwt.sign(
+      { sub: user.uuid, email },
+      process.env.NEXTAUTH_SECRET!,
+      { expiresIn: ACCESS_TOKEN_EXPIRY },
+    );
+
+    const refreshToken = jwt.sign(
+      { sub: user.uuid },
+      process.env.NEXTAUTH_SECRET!,
+      { expiresIn: REFRESH_TOKEN_EXPIRY },
+    );
+
+    return ResponseSuccess({
+      user: {
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      },
+      token: {
+        accessToken,
+        refreshToken,
+      },
+      isExistingUser: true,
+    });
   } catch (error) {
     console.error('Error adding person:', error);
     return ResponseError(59999);
