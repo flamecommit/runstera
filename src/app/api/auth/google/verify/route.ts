@@ -5,6 +5,8 @@ import { ResponseError, ResponseSuccess } from '@/utils/response';
 import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 
+const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
+
 export async function POST(req: NextRequest) {
   try {
     const { token } = await req.json();
@@ -52,17 +54,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const accessToken = jwt.sign(
-      { uuid: user.uuid, email: googleUser.email },
-      process.env.NEXTAUTH_SECRET!,
-      { expiresIn: ACCESS_TOKEN_EXPIRY },
-    );
+    const accessToken = jwt.sign({ sub: user.uuid }, JWT_SECRET, {
+      expiresIn: ACCESS_TOKEN_EXPIRY,
+    });
 
-    const refreshToken = jwt.sign(
-      { uuid: user.uuid, email: googleUser.email },
-      process.env.NEXTAUTH_SECRET!,
-      { expiresIn: REFRESH_TOKEN_EXPIRY },
-    );
+    const refreshToken = jwt.sign({ sub: user.uuid }, JWT_SECRET, {
+      expiresIn: REFRESH_TOKEN_EXPIRY,
+    });
 
     // 예: { email, name, picture, id, verified_email: true }
     return ResponseSuccess({

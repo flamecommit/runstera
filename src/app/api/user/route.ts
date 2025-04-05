@@ -4,6 +4,8 @@ import { supabase } from '@/lib/supabase';
 import { ResponseError, ResponseSuccess } from '@/utils/response';
 import jwt from 'jsonwebtoken';
 
+const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -56,17 +58,13 @@ export async function POST(req: Request) {
 
     const user = data?.[0];
 
-    const accessToken = jwt.sign(
-      { uuid: user.uuid, email },
-      process.env.NEXTAUTH_SECRET!,
-      { expiresIn: ACCESS_TOKEN_EXPIRY },
-    );
+    const accessToken = jwt.sign({ sub: user.uuid }, JWT_SECRET, {
+      expiresIn: ACCESS_TOKEN_EXPIRY,
+    });
 
-    const refreshToken = jwt.sign(
-      { uuid: user.uuid, email },
-      process.env.NEXTAUTH_SECRET!,
-      { expiresIn: REFRESH_TOKEN_EXPIRY },
-    );
+    const refreshToken = jwt.sign({ sub: user.uuid }, JWT_SECRET, {
+      expiresIn: REFRESH_TOKEN_EXPIRY,
+    });
 
     return ResponseSuccess({
       user: {
